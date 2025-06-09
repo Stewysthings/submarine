@@ -14,6 +14,8 @@ function App() {
   });
   const [input, setInput] = useState("");
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -36,6 +38,28 @@ function App() {
         task.id === id ? { ...task, completed: !task.completed } : task,
       ),
     );
+  };
+
+  const startEditing = (id: number, text: string) => {
+    setEditingId(id);
+    setEditText(text);
+  };
+
+  const saveEdit = (id: number) => {
+    if (editText.trim()) {
+      setTasks(
+        tasks.map((task) =>
+          task.id === id ? { ...task, text: editText } : task,
+        ),
+      );
+    }
+    setEditingId(null);
+    setEditText("");
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditText("");
   };
 
   const filteredTasks = tasks.filter(
@@ -71,13 +95,30 @@ function App() {
               checked={task.completed}
               onChange={() => toggleTask(task.id)}
             />
-            <span
-              style={{
-                textDecoration: task.completed ? "line-through" : "none",
-              }}
-            >
-              {task.text}
-            </span>
+            {editingId === task.id ? (
+              <input
+                type="text"
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") saveEdit(task.id);
+                  if (e.key === "Escape") cancelEdit();
+                }}
+                onBlur={() => saveEdit(task.id)}
+                className="edit-input"
+                autoFocus
+              />
+            ) : (
+              <span
+                style={{
+                  textDecoration: task.completed ? "line-through" : "none",
+                }}
+                onDoubleClick={() => startEditing(task.id, task.text)}
+                className="task-text"
+              >
+                {task.text}
+              </span>
+            )}
             <button onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}

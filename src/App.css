@@ -98,6 +98,21 @@ button:hover {
   flex: 1;
   color: #333;
 }
-.read-the-docs {
-  color: #888;
+
+.edit-input {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.edit-input:focus {
+  border-color: #007bff;
+}
+
+.task-text {
+  cursor: pointer;
+  flex: 1;
 }
