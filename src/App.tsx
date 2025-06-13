@@ -80,6 +80,13 @@ function App() {
   weekEnd.setDate(today.getDate() + (6 - today.getDay())); // Saturday
 
   const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  const categoryLabels: Record<string, string> = {
+  today: 'Today',
+  thisweek: 'This Week',
+  thismonth: 'This Month',
+  someday: 'Someday',
+};
+
 
   const categorizeTask = (task: Task): 'today' | 'thisweek' | 'thismonth' | 'someday' => {
     if (!task.dueDate) return 'someday';
@@ -141,7 +148,8 @@ function App() {
 
       {displayedTasks.map(([cat, tasks]) => (
         <div key={cat} className="category-section">
-          <h2>{cat.charAt(0).toUpperCase() + cat.slice(1)}</h2>
+          <h2>{categoryLabels[cat]}</h2>
+
           <ul className="task-list">
             {tasks.map((task) => (
               <li key={task.id} className="task-item">
