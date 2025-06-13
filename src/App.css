@@ -116,3 +116,45 @@ button:hover {
   cursor: pointer;
   flex: 1;
 }
+.category-section {
+  margin-bottom: 30px;
+}
+
+.category-section h2 {
+  margin-bottom: 10px;
+  color: #444;
+  font-size: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  
+}.edit-container button {
+  margin-left: 5px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+@media (max-width: 480px) {
+  .app {
+    padding: 10px;
+  }
+
+  .input-container,
+  .filter-buttons {
+    flex-direction: column;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-text {
+    width: 100%;
+  }
+
+  .edit-container button {
+    width: 100%;
+    margin: 5px 0 0 0;
+  }
+}
+
+
