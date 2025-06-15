@@ -18,9 +18,10 @@ h1 {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-input[type="text"] {
+.task-input {
   flex: 1;
   padding: 10px;
   font-size: 16px;
@@ -29,7 +30,19 @@ input[type="text"] {
   outline: none;
 }
 
-input[type="text"]:focus {
+.task-input:focus {
+  border-color: #007bff;
+}
+
+.date-picker {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.date-picker:focus {
   border-color: #007bff;
 }
 
@@ -53,6 +66,7 @@ button:hover {
   gap: 10px;
   margin-bottom: 20px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .filter-buttons button {
@@ -67,6 +81,21 @@ button:hover {
 
 .filter-buttons button:hover {
   background-color: #d0d0d0;
+}
+
+.filter-buttons button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.category-section {
+  margin-bottom: 20px;
+}
+
+.category-section h2 {
+  font-size: 1.2em;
+  color: #333;
+  margin: 10px 0;
 }
 
 .task-list {
@@ -90,71 +119,35 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.task-item.overdue {
+  background-color: #ffe6e6;
+}
+
 .task-item input[type="checkbox"] {
   cursor: pointer;
 }
 
-.task-item span {
+.task-text {
   flex: 1;
-  color: #333;
+  cursor: pointer;
+}
+
+.edit-container {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  align-items: center;
 }
 
 .edit-input {
-  flex: 1;
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+  flex: 1;
 }
 
 .edit-input:focus {
   border-color: #007bff;
 }
-
-.task-text {
-  cursor: pointer;
-  flex: 1;
-}
-.category-section {
-  margin-bottom: 30px;
-}
-
-.category-section h2 {
-  margin-bottom: 10px;
-  color: #444;
-  font-size: 20px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
-  
-}.edit-container button {
-  margin-left: 5px;
-  padding: 6px 12px;
-  font-size: 14px;
-}
-@media (max-width: 480px) {
-  .app {
-    padding: 10px;
-  }
-
-  .input-container,
-  .filter-buttons {
-    flex-direction: column;
-  }
-
-  .task-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .task-text {
-    width: 100%;
-  }
-
-  .edit-container button {
-    width: 100%;
-    margin: 5px 0 0 0;
-  }
-}
-
-
