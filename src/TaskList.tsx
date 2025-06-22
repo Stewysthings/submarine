@@ -14,6 +14,7 @@ interface TaskListProps {
   setEditText: (text: string) => void;
   setEditDueDate: (date: string) => void;
   saveEdit: () => void;
+  cancelEdit: () => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
@@ -29,12 +30,8 @@ const TaskList: React.FC<TaskListProps> = ({
   setEditText,
   setEditDueDate,
   saveEdit,
+  cancelEdit,
 }) => {
-  const cancelEdit = () => {
-    setEditText('');
-    setEditDueDate('');
-  };
-
   return (
     <>
       {displayedTasks.some(([_, tasks]) => tasks.length > 0) ? (
@@ -55,35 +52,37 @@ const TaskList: React.FC<TaskListProps> = ({
                     onChange={() => toggleTask(task.id)}
                   />
                   {editingId === task.id ? (
-                    <div className="edit-container">
-                      <input
-                        type="text"
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') saveEdit();
-                          if (e.key === 'Escape') cancelEdit();
-                        }}
-                        onBlur={saveEdit}
-                        className="edit-input"
-                        autoFocus
-                      />
-                      <input
-                        type="date"
-                        value={editDueDate}
-                        onChange={(e) => setEditDueDate(e.target.value)}
-                        className="date-picker"
-                      />
-                      <button onClick={saveEdit}>Save</button>
-                      <button onClick={cancelEdit}>Cancel</button>
-                    </div>
-                  ) : (
-                    <span
-                      className="task-text"
-                      onDoubleClick={() => startEdit(task.id, task.text, task.dueDate)}
-                    >
-                      {task.text} {task.dueDate && `(${task.dueDate})`}
-                    </span>
+                <div className="edit-container" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') saveEdit();
+                      if (e.key === 'Escape') cancelEdit();
+                    }}
+                    onBlur={saveEdit}
+                    className="edit-input"
+                    autoFocus
+                  />
+                  <input
+                    type="date"
+                    value={editDueDate}
+                    onChange={(e) => setEditDueDate(e.target.value)}
+                    onClick={(e) => e.stopPropagation()} // Prevent parent click events
+                    className="date-picker"
+                    autoFocus={false} // Avoid stealing focus from text input initially
+                  />
+                  <button onClick={saveEdit}>Save</button>
+                  <button onClick={cancelEdit}>Cancel</button>
+                </div>
+              ) : (
+                <span
+                  className="task-text"
+                  onDoubleClick={() => startEdit(task.id, task.text, task.dueDate)}
+                >
+                  {task.text} {task.dueDate && `(${task.dueDate})`}
+                </span>
                   )}
                   <button onClick={() => deleteTask(task.id)}>Delete</button>
                 </li>

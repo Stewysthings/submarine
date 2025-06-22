@@ -121,7 +121,14 @@ button:hover {
 
 .task-item.overdue {
   background-color: #ffe6e6;
+  color: #d32f2f; /* Red text for overdue */
 }
+.task-item.overdue .task-text::after {
+  content: " (overdue)";
+  color: #d32f2f;
+  font-weight: bold;
+}
+
 
 .task-item input[type="checkbox"] {
   cursor: pointer;
