@@ -26,7 +26,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         className="task-input"
       />
       <input
-        type="date"
+        type="datetime-local"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
         className="date-picker"

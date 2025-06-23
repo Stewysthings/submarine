@@ -16,6 +16,14 @@ interface TaskListProps {
   saveEdit: () => void;
   cancelEdit: () => void;
 }
+function formatDueDate(dueDate?: string): string {
+  if (!dueDate) return '';
+  const date = new Date(dueDate); // browser parses "YYYY-MM-DDTHH:MM"
+  return date.toLocaleString([], {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  });
+}
 
 const TaskList: React.FC<TaskListProps> = ({
   displayedTasks,
@@ -78,10 +86,11 @@ const TaskList: React.FC<TaskListProps> = ({
                 </div>
               ) : (
                 <span
-                  className="task-text"
-                  onDoubleClick={() => startEdit(task.id, task.text, task.dueDate)}
+                    className={`task-text ${isOverdue(task.dueDate) && !task.completed ? 'overdue' : ''}`}
+                    onDoubleClick={() => startEdit(task.id, task.text, task.dueDate)}
                 >
-                  {task.text} {task.dueDate && `(${task.dueDate})`}
+                  {task.text} {task.dueDate && `(${formatDueDate(task.dueDate)})`}
+
                 </span>
                   )}
                   <button onClick={() => deleteTask(task.id)}>Delete</button>

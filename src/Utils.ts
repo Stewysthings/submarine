@@ -27,33 +27,36 @@ export const getMonthEnd = () => {
 export const isOverdue = (dueDate?: string): boolean => {
   if (!dueDate) return false;
   try {
-    const [year, month, day] = dueDate.split('-').map(Number);
-    if (isNaN(year) || isNaN(month) || isNaN(day)) return false;
-    const due = new Date(year, month - 1, day);
-    due.setHours(0, 0, 0, 0);
-    return due.getTime() < getToday().getTime();
+    const due = new Date(dueDate); // parses the full timestamp (YYYY-MM-DDTHH:mm)
+
+    // optional: strip off seconds/ms
+    const now = new Date();
+    now.setSeconds(0, 0); // optional to align with dueDate precision
+
+    return due.getTime() < now.getTime();
   } catch (error) {
-    console.warn('Invalid dueDate for overdue check:', dueDate);
+    console.warn('Invalid dueDate for overdue check:', dueDate, error);
     return false;
   }
 };
 
+
+
 export const categorizeTask = (task: Task): 'today' | 'thisweek' | 'thismonth' | 'someday' => {
   if (!task.dueDate) return 'someday';
-  try {
-    const [year, month, day] = task.dueDate.split('-').map(Number);
-    if (isNaN(year) || isNaN(month) || isNaN(day)) return 'someday';
-    const due = new Date(year, month - 1, day);
-    due.setHours(0, 0, 0, 0);
-    const today = getToday();
-    const weekEnd = getWeekEnd();
-    const monthEnd = getMonthEnd();
-    if (due.getTime() === today.getTime()) return 'today';
-    if (due <= weekEnd) return 'thisweek';
-    if (due <= monthEnd) return 'thismonth';
-    return 'someday';
-  } catch (error) {
-    console.error('Error categorizing task:', task, error);
-    return 'someday';
-  }
+
+  // Extract just the "YYYY-MM-DD" part:
+  const datePart = task.dueDate.split('T')[0]; // This drops the time part
+  const [year, month, day] = datePart.split('-').map(Number);
+  const due = new Date(year, month - 1, day);
+  due.setHours(0, 0, 0, 0);
+
+  const today = getToday();
+  const weekEnd = getWeekEnd();
+  const monthEnd = getMonthEnd();
+
+  if (due.getTime() === today.getTime()) return 'today';
+  if (due <= weekEnd) return 'thisweek';
+  if (due <= monthEnd) return 'thismonth';
+  return 'someday';
 };
