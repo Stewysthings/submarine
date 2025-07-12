@@ -84,8 +84,9 @@ function App() {
           editDueDate={editingState.dueDate}
           setEditText={(text) => setEditingState({ ...editingState, text })}
           setEditDueDate={(dueDate) => setEditingState({ ...editingState, dueDate })}
-          saveEdit={saveEdit}
-        />
+          saveEdit={saveEdit} cancelEdit={function (): void {
+            throw new Error('Function not implemented.');
+          } }        />
       </div>
     </ErrorBoundary>
   );
