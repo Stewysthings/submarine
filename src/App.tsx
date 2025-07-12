@@ -45,6 +45,7 @@ function App() {
   // 🧮 Memoize categorized tasks for performance
   const categorizedTasks = useMemo(() => {
     const categories: Record<string, Task[]> = {
+      dueSoon: [],
       today: [],
       thisweek: [],
       thismonth: [],

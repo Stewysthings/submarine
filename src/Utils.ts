@@ -1,6 +1,7 @@
 import type { Task } from './types';
 
 export const categoryLabels: Record<string, string> = {
+  dueSoon: 'Due Soon',
   today: 'Today',
   thisweek: 'This Week',
   thismonth: 'This Month',
@@ -42,19 +43,21 @@ export const isOverdue = (dueDate?: string): boolean => {
 
 
 
-export const categorizeTask = (task: Task): 'today' | 'thisweek' | 'thismonth' | 'someday' => {
+export const categorizeTask = (task: Task): 'dueSoon' | 'today' | 'thisweek' | 'thismonth' | 'someday' => {
   if (!task.dueDate) return 'someday';
 
-  // Extract just the "YYYY-MM-DD" part:
-  const datePart = task.dueDate.split('T')[0]; // This drops the time part
-  const [year, month, day] = datePart.split('-').map(Number);
-  const due = new Date(year, month - 1, day);
-  due.setHours(0, 0, 0, 0);
+  const due = new Date(task.dueDate);
+  due.setSeconds(0, 0); // Align precision
+
+  const now = new Date();
+  const in24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
 
   const today = getToday();
   const weekEnd = getWeekEnd();
   const monthEnd = getMonthEnd();
 
+  if (due < in24Hours && due > now) return 'dueSoon';
   if (due.getTime() === today.getTime()) return 'today';
   if (due <= weekEnd) return 'thisweek';
   if (due <= monthEnd) return 'thismonth';
