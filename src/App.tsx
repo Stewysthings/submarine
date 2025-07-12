@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './App.css';
 import type { Task } from './types';
 import TaskInput from './TaskInput';
@@ -6,18 +6,27 @@ import TaskList from './TaskList';
 import FilterButtons from './FilterButtons';
 import { isOverdue, categorizeTask, categoryLabels } from './Utils';
 import { useTaskManager } from './hooks/useTaskManager';
-function ErrorBoundary({ children }: { children: React.ReactNode }) {
-  const [error, setError] = useState<string | null>(null);
-  if (error) return <div>Error: {error}</div>;
-  try {
-    return <>{children}</>;
-  } catch (err) {
-    setError((err as Error).message);
-    return <div>Error: {error}</div>;
+import React from 'react';
+
+// ✅ Proper ErrorBoundary using a class component
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: string | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  componentDidCatch(error: Error) {
+    this.setState({ error: error.message });
+  }
+
+  render() {
+    if (this.state.error) return <div>Error: {this.state.error}</div>;
+    return this.props.children;
   }
 }
 
 function App() {
+  // 🧠 Custom task logic handled by your custom hook
   const {
     tasks,
     editingState,
@@ -28,26 +37,29 @@ function App() {
     startEdit,
     saveEdit,
   } = useTaskManager();
-  const [category, setCategory] = useState<
-    'all' | 'today' | 'thisweek' | 'thismonth' | 'someday'
-  >('all');
+
+  const [category, setCategory] = useState<'all' | 'today' | 'thisweek' | 'thismonth' | 'someday'>('all');
   const [input, setInput] = useState('');
   const [dueDate, setDueDate] = useState('');
 
-  const categorizedTasks: Record<string, Task[]> = {
-    today: [],
-    thisweek: [],
-    thismonth: [],
-    someday: [],
-  };
+  // 🧮 Memoize categorized tasks for performance
+  const categorizedTasks = useMemo(() => {
+    const categories: Record<string, Task[]> = {
+      today: [],
+      thisweek: [],
+      thismonth: [],
+      someday: [],
+    };
+    tasks
+      .filter((task) => !task.completed)
+      .forEach((task) => {
+        const cat = categorizeTask(task);
+        categories[cat].push(task);
+      });
+    return categories;
+  }, [tasks]);
 
-  tasks
-    .filter((task) => !task.completed)
-    .forEach((task) => {
-      const cat = categorizeTask(task);
-      categorizedTasks[cat].push(task);
-    });
-
+  // 🎯 Decide which tasks to show based on selected category
   const displayedTasks: [string, Task[]][] =
     category === 'all'
       ? Object.entries(categorizedTasks)
@@ -59,7 +71,9 @@ function App() {
     <ErrorBoundary>
       <div className="app">
         <h1>To-Do List</h1>
-        <p>Test message - App loaded</p>
+        <p>Submarine is surfacing…</p>
+
+        {/* 📝 Task input form */}
         <TaskInput
           input={input}
           dueDate={dueDate}
@@ -71,7 +85,11 @@ function App() {
             setDueDate('');
           }}
         />
+
+        {/* 🔘 Filter controls */}
         <FilterButtons category={category} setCategory={setCategory} />
+
+        {/* 📋 Display the categorized tasks */}
         <TaskList
           displayedTasks={displayedTasks}
           toggleTask={toggleTask}
@@ -84,9 +102,11 @@ function App() {
           editDueDate={editingState.dueDate}
           setEditText={(text) => setEditingState({ ...editingState, text })}
           setEditDueDate={(dueDate) => setEditingState({ ...editingState, dueDate })}
-          saveEdit={saveEdit} cancelEdit={function (): void {
-            throw new Error('Function not implemented.');
-          } }        />
+          saveEdit={saveEdit}
+
+          // ✅ Cancel edit resets editing state instead of throwing error
+          cancelEdit={() => setEditingState({ id: null, text: '', dueDate: '' })}
+        />
       </div>
     </ErrorBoundary>
   );
