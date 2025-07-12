@@ -141,9 +141,13 @@ button:hover {
 
 .edit-container {
   display: flex;
-  gap: 10px;
   flex: 1;
   align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f3f3f3;
+  border-radius: 6px;
 }
 
 .edit-input {
@@ -157,4 +161,25 @@ button:hover {
 
 .edit-input:focus {
   border-color: #007bff;
+}
+
+.edit-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+.task-item.due-soon {
+  border-left: 4px solid orange;
+  background-color: #fffbea;
+}
+
+.task-text.due-soon {
+  font-weight: bold;
+  color: orange;
 }
