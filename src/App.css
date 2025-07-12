@@ -1,3 +1,4 @@
+/* 🌊 Overall App Container */
 .app {
   max-width: 600px;
   margin: 0 auto;
@@ -14,6 +15,7 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* 📝 Input Section */
 .input-container {
   display: flex;
   gap: 10px;
@@ -46,6 +48,7 @@ h1 {
   border-color: #007bff;
 }
 
+/* 🧭 Buttons */
 button {
   padding: 10px 20px;
   font-size: 16px;
@@ -88,6 +91,7 @@ button:hover {
   color: white;
 }
 
+/* 📦 Task List & Categories */
 .category-section {
   margin-bottom: 20px;
 }
@@ -103,6 +107,7 @@ button:hover {
   padding: 0;
 }
 
+/* 🧾 Individual Tasks */
 .task-item {
   display: flex;
   align-items: center;
@@ -119,35 +124,56 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 🔥 Overdue Task Highlight */
 .task-item.overdue {
   background-color: #ffe6e6;
-  color: #d32f2f; /* Red text for overdue */
+  color: #d32f2f;
 }
+
 .task-item.overdue .task-text::after {
   content: " (overdue)";
   color: #d32f2f;
   font-weight: bold;
 }
 
+/* ⏰ Due Soon Task Highlight */
+.task-item.due-soon {
+  background-color: #fffbea;
+  border-left: 4px solid orange;
+}
 
+.task-text.due-soon {
+  font-weight: bold;
+  color: #ff8c00;
+}
+
+.task-item.due-soon .task-text::after {
+  content: " (due soon)";
+  color: #ff8c00;
+  font-weight: bold;
+}
+
+/* ✅ Checkbox */
 .task-item input[type="checkbox"] {
   cursor: pointer;
 }
 
+/* 🖊️ Default Task Text */
 .task-text {
   flex: 1;
   cursor: pointer;
 }
 
+/* ✏️ Edit Mode Styling */
 .edit-container {
   display: flex;
-  flex: 1;
-  align-items: center;
   flex-direction: column;
+  align-items: stretch;
   gap: 0.5rem;
   padding: 0.5rem;
   background: #f3f3f3;
   border-radius: 6px;
+  flex: 1;
 }
 
 .edit-input {
@@ -161,25 +187,4 @@ button:hover {
 
 .edit-input:focus {
   border-color: #007bff;
-}
-
-.edit-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.edit-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-start;
-}
-.task-item.due-soon {
-  border-left: 4px solid orange;
-  background-color: #fffbea;
-}
-
-.task-text.due-soon {
-  font-weight: bold;
-  color: orange;
 }
