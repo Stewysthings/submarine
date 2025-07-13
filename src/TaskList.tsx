@@ -6,7 +6,7 @@ interface TaskListProps {
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   startEdit: (id: string, text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => void;
-  isOverdue: (dueDate?: string) => boolean;
+  isOverdue: (dueDate?: string, completed?: boolean) => boolean;
   isDueSoon: (dueDate?: string) => boolean;
   categoryLabels: Record<string, string>;
   editingId: string | null;
@@ -56,7 +56,7 @@ const TaskList: React.FC<TaskListProps> = ({
             <ul className="task-list">
               {tasks.map((task) => {
                 const statusClass = !task.completed
-                  ? isOverdue(task.dueDate)
+                  ? isOverdue(task.dueDate, task.completed)
                     ? 'overdue'
                     : isDueSoon(task.dueDate)
                       ? 'due-soon'
@@ -66,7 +66,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   <li
                     key={task.id}
                     className={`task-item ${statusClass}`}
-                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
+                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate, task.completed) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
                   >
                     <input
                       type="checkbox"
