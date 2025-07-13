@@ -1,26 +1,31 @@
+// Import React hooks and components for the app
 import { useState, useMemo } from 'react';
-import './App.css';
-import type { Task } from './types';
-import TaskInput from './TaskInput';
-import TaskList from './TaskList';
-import FilterButtons from './FilterButtons';
-import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils';
-import { useTaskManager } from './hooks/useTaskManager';
-import React from 'react';
+import './AppLayout.css'; // Import layout styles
+import './ButtonStyles.css'; // Import button styles
+import './TaskStyles.css'; // Import task-related styles
+import './FormStyles.css'; // Import form and input styles
+import type { Task } from './types'; // Type definition for tasks
+import TaskInput from './TaskInput'; // Input component for adding tasks
+import TaskList from './TaskList'; // Component to display tasks
+import FilterButtons from './FilterButtons'; // Filter buttons component
+import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils'; // Utility functions
+import { useTaskManager } from './hooks/useTaskManager'; // Custom task management hook
+import React from 'react'; // React library
 
+/* ErrorBoundary class to catch and display JavaScript errors gracefully */
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: string | null }> {
   constructor(props: { children: React.ReactNode }) {
     super(props);
-    this.state = { error: null };
+    this.state = { error: null }; // Initialize error state
   }
 
   componentDidCatch(error: Error) {
-    this.setState({ error: error.message });
+    this.setState({ error: error.message }); // Update state with error message
   }
 
   render() {
-    if (this.state.error) return <div className="error">Error: {this.state.error}</div>;
-    return this.props.children;
+    if (this.state.error) return <div className="error">Error: {this.state.error}</div>; // Show error if present
+    return this.props.children; // Render children if no error
   }
 }
 
@@ -35,15 +40,17 @@ function App() {
     startEdit,
     saveEdit,
     cancelEdit,
-  } = useTaskManager();
+  } = useTaskManager(); // Destructure task management functions and state
 
   const [category, setCategory] = useState<
     'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed'
-  >('all');
-  const [input, setInput] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low');
+  >('all'); // State to manage active filter category
 
+  const [input, setInput] = useState(''); // State for task input text
+  const [dueDate, setDueDate] = useState(''); // State for task due date
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low'); // State for task priority
+
+  // Memoize task categorization to improve performance
   const categorizedTasks = useMemo(() => {
     const categories: Record<string, Task[]> = {
       completed: [],
@@ -56,25 +63,26 @@ function App() {
     };
     tasks.forEach((task) => {
       if (task.completed) {
-        categories.completed.push(task);
-      } else if (isOverdue(task.dueDate)) {
-        categories.overdue.push(task);
+        categories.completed.push(task); // Categorize completed tasks
+      } else if (isOverdue(task.dueDate, task.completed)) {
+        categories.overdue.push(task); // Categorize overdue tasks
       } else if (isDueSoon(task.dueDate)) {
-        categories.dueSoon.push(task);
+        categories.dueSoon.push(task); // Categorize due soon tasks
       } else {
         const cat = categorizeTask(task);
-        categories[cat].push(task);
+        categories[cat].push(task); // Categorize other tasks
       }
     });
     return categories;
   }, [tasks]);
 
+  // Memoize displayed tasks based on selected category
   const displayedTasks: [string, Task[]][] = useMemo(() => {
     const nonEmptyCategories = Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0);
     return category === 'all' ? nonEmptyCategories : [[category, categorizedTasks[category] || []]];
   }, [category, categorizedTasks]);
 
-  console.log('App is rendering, number of tasks:', tasks.length);
+  console.log('App is rendering, number of tasks:', tasks.length); // Log rendering details
 
   return (
     <ErrorBoundary>
@@ -93,10 +101,10 @@ function App() {
             setInput('');
             setDueDate('');
             setPriority('low');
-            setCategory('all');
+            setCategory('all'); // Reset to show all tasks after adding
           }}
         />
-        <FilterButtons category={category} setCategory={setCategory} />
+        <FilterButtons category={category} setCategory={setCategory} /> {/* Filter buttons for task categories */}
         <TaskList
           displayedTasks={displayedTasks}
           toggleTask={toggleTask}
@@ -114,7 +122,7 @@ function App() {
           setEditPriority={(priority) => setEditingState({ ...editingState, priority })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}
-        />
+        /> {/* Display task list with editing capabilities */}
       </div>
     </ErrorBoundary>
   );

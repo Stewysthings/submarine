@@ -1,3 +1,4 @@
+/* Main app container with max width, centered layout, and light theme */
 .app {
   max-width: 600px;
   margin: 0 auto;
@@ -13,6 +14,7 @@
   text-align: center;
 }
 
+/* Heading styles */
 h1 {
   color: #333;
   margin-bottom: 20px;
@@ -20,12 +22,14 @@ h1 {
   font-weight: 600;
 }
 
+/* Submarine message styling */
 .submarine-message {
   color: #666;
   margin-bottom: 20px;
   font-size: 1.1em;
 }
 
+/* Error message styling */
 .error {
   color: #ff4d4d;
   padding: 20px;
@@ -34,266 +38,12 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* Container for task input fields */
 .input-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 80px; /* Increased for spacing before category buttons */
   flex-wrap: wrap;
   width: 100%;
-}
-
-.task-input {
-  flex: 1;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-}
-
-.task-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.date-picker {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-}
-
-.date-picker:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.priority-selector {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-}
-
-.priority-selector:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.add-button, .edit-button, .delete-button, .save-button, .cancel-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.add-button {
-  background-color: #007bff;
-  color: white;
-}
-
-.add-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
-}
-
-.edit-button {
-  background-color: #28a745;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #218838;
-  transform: translateY(-1px);
-}
-
-.delete-button {
-  background-color: #dc3545;
-  color: white;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
-  transform: translateY(-1px);
-}
-
-.save-button {
-  background-color: #17a2b8;
-  color: white;
-}
-
-.save-button:hover {
-  background-color: #138496;
-  transform: translateY(-1px);
-}
-
-.cancel-button {
-  background-color: #6c757d;
-  color: white;
-}
-
-.cancel-button:hover {
-  background-color: #5a6268;
-  transform: translateY(-1px);
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.filter-buttons button {
-  padding: 8px 16px;
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.filter-buttons button:hover {
-  background-color: #d0d0d0;
-  transform: translateY(-1px);
-}
-
-.filter-buttons button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.filter-buttons button:focus {
-  outline: 2px solid #007bff;
-  outline-offset: 2px;
-}
-
-.category-section {
-  margin-bottom: 30px;
-  width: 100%;
-}
-
-.category-heading {
-  font-size: 1.4em;
-  color: #333;
-  margin: 10px 0;
-  font-weight: 500;
-  text-align: left;
-}
-
-.task-list {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-}
-
-.task-item {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background-color: #fff;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #dee2e6;
-  transition: box-shadow 0.2s;
-}
-
-.task-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.task-item.overdue {
-  background-color: #ffe6e6;
-  color: #d32f2f;
-}
-
-.task-item.overdue .task-text::after {
-  content: " (overdue)";
-  color: #d32f2f;
-  font-weight: bold;
-}
-
-.task-item.due-soon {
-  background-color: #fffbea;
-  border-left: 4px solid orange;
-}
-
-.task-text.due-soon {
-  font-weight: bold;
-  color: #ff8c00;
-}
-
-.task-item.due-soon .task-text::after {
-  content: " (due soon)";
-  color: #ff8c00;
-  font-weight: bold;
-}
-
-.task-checkbox {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-}
-
-.task-text {
-  flex: 1;
-  cursor: pointer;
-  font-size: 1.1em;
-}
-
-.edit-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-}
-
-.edit-input {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-  flex: 1;
-}
-
-.edit-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.priority-label {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.9em;
-  font-weight: 500;
-}
-
-.priority-label.low {
-  background-color: #e0fbe0;
-  color: green;
-}
-
-.priority-label.medium {
-  background-color: #fff5cc;
-  color: orange;
-}
-
-.priority-label.high {
-  background-color: #ffe4e1;
-  color: red;
-}
-
-.no-tasks {
-  color: #666;
-  font-size: 1.1em;
-  margin-top: 20px;
 }
