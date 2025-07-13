@@ -41,17 +41,17 @@ export const useTaskManager = () => {
   }, [tasks]);
 
   // ➕ Add a new task
-  const addTask = (text: string, dueDate: string) => {
-    if (!text.trim()) return;
-    const newTask: Task = {
-      id: Date.now(),
-      text: text.trim(),
-      completed: false,
-      dueDate: dueDate || undefined,
-    };
-    console.log('Adding task:', newTask);
-    setTasks([...tasks, newTask]);
+  const addTask = (text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => {
+  if (!text.trim()) return;
+  const newTask: Task = {
+    id: Date.now(),
+    text: text.trim(),
+    completed: false,
+    dueDate: dueDate || undefined,
+    priority,
   };
+  setTasks([...tasks, newTask]);
+};
 
   // ❌ Delete a task by ID
   const deleteTask = (id: number) => {
