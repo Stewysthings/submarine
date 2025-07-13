@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Task, EditingState } from '../types';
+import type { Task, EditingState } from './types';
 
 export function useTaskManager() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -8,7 +8,13 @@ export function useTaskManager() {
       const parsed = saved ? JSON.parse(saved) : [];
       console.log('Loaded tasks:', parsed);
       return Array.isArray(parsed)
-        ? parsed.filter((t: any) => t.id && t.text)
+        ? parsed.map((t: any) => ({
+            id: t.id || crypto.randomUUID(),
+            text: t.text || '',
+            dueDate: t.dueDate || undefined,
+            completed: t.completed || false,
+            priority: t.priority || 'low', // Ensure priority is set
+          })).filter((t: Task) => t.id && t.text)
         : [];
     } catch (error) {
       console.warn('Failed to load tasks from localStorage:', error);
@@ -41,7 +47,7 @@ export function useTaskManager() {
       text: text.trim(),
       dueDate: dueDate || undefined,
       completed: false,
-      priority,
+      priority: priority || 'low', // Ensure priority is set
     };
     setTasks([...tasks, newTask]);
   };
@@ -66,7 +72,7 @@ export function useTaskManager() {
 
   const startEdit = (id: string, text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => {
     console.log('Editing task ID:', id);
-    setEditingState({ id, text, dueDate: dueDate || '', priority });
+    setEditingState({ id, text, dueDate: dueDate || '', priority: priority || 'low' });
   };
 
   const saveEdit = (id: string) => {
@@ -79,7 +85,7 @@ export function useTaskManager() {
               ...task,
               text: editingState.text,
               dueDate: editingState.dueDate || undefined,
-              priority: editingState.priority,
+              priority: editingState.priority || 'low', // Ensure priority is set
             }
           : task
       )
