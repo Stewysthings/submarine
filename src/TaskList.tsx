@@ -51,6 +51,7 @@ const TaskList: React.FC<TaskListProps> = ({
   removingId,
 }) => {
   const [addedIds, setAddedIds] = useState<string[]>([]);
+  const [completedIds, setCompletedIds] = useState<string[]>([]);
 
   useEffect(() => {
     const allTaskIds = displayedTasks.flatMap(([_, tasks]) => tasks.map(task => task.id));
@@ -62,6 +63,19 @@ const TaskList: React.FC<TaskListProps> = ({
       }, 300); // Match animation duration
     }
   }, [displayedTasks, addedIds]);
+
+  useEffect(() => {
+    const completedTaskIds = displayedTasks
+      .flatMap(([_, tasks]) => tasks)
+      .filter(task => task.completed && !completedIds.includes(task.id))
+      .map(task => task.id);
+    if (completedTaskIds.length > 0) {
+      setCompletedIds(prev => [...prev, ...completedTaskIds]);
+      setTimeout(() => {
+        setCompletedIds(prev => prev.filter(id => !completedTaskIds.includes(id)));
+      }, 300); // Match animation duration
+    }
+  }, [displayedTasks, completedIds]);
 
   return (
     <>
@@ -81,7 +95,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 return (
                   <li
                     key={task.id}
-                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''} ${addedIds.includes(task.id) ? 'added' : ''}`}
+                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''} ${addedIds.includes(task.id) ? 'added' : ''} ${completedIds.includes(task.id) ? 'completed' : ''}`}
                     aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate) ? 'Overdue' : isDueSoon(task.dueDate) ? 'Due soon' : ''}`}
                   >
                     <input
@@ -150,7 +164,9 @@ const TaskList: React.FC<TaskListProps> = ({
                         >
                           {task.text} {task.dueDate && `(${formatDueDate(task.dueDate)})`}
                         </span>
-                        <span className={`priority-label ${task.priority.toLowerCase()}`}>{task.priority}</span>
+                        <span className={`priority-label ${task.priority ? task.priority.toLowerCase() : 'low'}`}>
+                          {task.priority || 'Low'}
+                        </span>
                         <button
                           type="button"
                           onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority)}
