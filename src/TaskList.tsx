@@ -107,7 +107,7 @@ const TaskList: React.FC<TaskListProps> = ({
                         {task.text} {task.dueDate && `(${formatDueDate(task.dueDate)})`}
                       </span>
                     )}
-
+                      <span className={`priority ${task.priority}`}>{task.priority}</span>
                     <button type="button" onClick={() => deleteTask(task.id)}>Delete</button>
                   </li>
                 );

@@ -8,6 +8,7 @@ interface TaskInputProps {
   addTask: (priority: 'low' | 'medium' | 'high') => void;
 }
 
+
 const TaskInput: React.FC<TaskInputProps> = ({
   input,
   dueDate,
