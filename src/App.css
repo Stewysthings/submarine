@@ -1,218 +1,54 @@
-/* 🌊 Overall App Container */
 .app {
+  background-color: #1a2b3c; /* Deep navy */
+  color: #e0e7ff; /* Light text */
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  min-height: 100vh;
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
+  color: #00f7ff; /* Cyan */
+  margin-bottom: 1rem;
 }
 
-/* 📝 Input Section */
-.input-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.task-input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-}
-
-.task-input:focus {
-  border-color: #007bff;
-}
-
-.date-picker {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-}
-
-.date-picker:focus {
-  border-color: #007bff;
-}
-
-/* 🧭 Buttons */
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.filter-buttons button {
-  padding: 8px 16px;
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.filter-buttons button:hover {
-  background-color: #d0d0d0;
-}
-
-.filter-buttons button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-/* 📦 Task List & Categories */
-.category-section {
-  margin-bottom: 20px;
-}
-
-.category-section h2 {
-  font-size: 1.2em;
-  color: #333;
-  margin: 10px 0;
+.error {
+  color: #ff4d4d;
+  text-align: center;
+  padding: 20px;
 }
 
 .task-list {
-  list-style: none;
-  padding: 0;
+  margin-top: 20px;
 }
 
-/* 🧾 Individual Tasks */
-.task-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: #fff;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  border: 1px solid #dee2e6;
-  transition: box-shadow 0.2s;
+.task {
+  transition: all 0.3s ease;
 }
 
-.task-item:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.task.overdue {
+  background-color: #4b0000; /* Dark red */
 }
 
-/* 🔥 Overdue Task Highlight */
-.task-item.overdue {
-  background-color: #ffe6e6;
-  color: #d32f2f;
+.task.due-soon {
+  background-color: #663300; /* Dark orange */
 }
 
-.task-item.overdue .task-text::after {
-  content: " (overdue)";
-  color: #d32f2f;
-  font-weight: bold;
+.task.priority-low {
+  border-left: 4px solid #4caf50; /* Green */
 }
 
-/* ⏰ Due Soon Task Highlight */
-.task-item.due-soon {
-  background-color: #fffbea;
-  border-left: 4px solid orange;
+.task.priority-medium {
+  border-left: 4px solid #ffeb3b; /* Yellow */
 }
 
-.task-text.due-soon {
-  font-weight: bold;
-  color: #ff8c00;
+.task.priority-high {
+  border-left: 4px solid #f44336; /* Red */
 }
 
-.task-item.due-soon .task-text::after {
-  content: " (due soon)";
-  color: #ff8c00;
-  font-weight: bold;
-}
-
-/* ✅ Checkbox */
-.task-item input[type="checkbox"] {
-  cursor: pointer;
-}
-
-/* 🖊️ Default Task Text */
-.task-text {
-  flex: 1;
-  cursor: pointer;
-}
-
-/* ✏️ Edit Mode Styling */
-.edit-container {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: #f3f3f3;
-  border-radius: 6px;
-  flex: 1;
-}
-
-.edit-input {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  flex: 1;
-}
-
-.edit-input:focus {
-  border-color: #007bff;
-}
-
-.priority-label {
-  margin-left: 8px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.85em;
-  font-weight: 500;
-}
-
-.priority-label.low {
-  background-color: #e0fbe0;
-  color: green;
-}
-
-.priority-label.medium {
-  background-color: #fff5cc;
-  color: orange;
-}
-
-.priority-label.high {
-  background-color: #ffe4e1;
-  color: red;
-}
-
-.task-item.removing {
+.task.removing {
   animation: fadeOutLeft 0.3s ease forwards;
 }
 
