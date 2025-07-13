@@ -38,7 +38,7 @@ function App() {
   } = useTaskManager();
 
   const [category, setCategory] = useState<
-    'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon'
+    'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed'
   >('all');
   const [input, setInput] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -46,6 +46,7 @@ function App() {
 
   const categorizedTasks = useMemo(() => {
     const categories: Record<string, Task[]> = {
+      completed: [],
       overdue: [],
       dueSoon: [],
       today: [],
@@ -54,7 +55,9 @@ function App() {
       someday: [],
     };
     tasks.forEach((task) => {
-      if (isOverdue(task.dueDate)) {
+      if (task.completed) {
+        categories.completed.push(task);
+      } else if (isOverdue(task.dueDate)) {
         categories.overdue.push(task);
       } else if (isDueSoon(task.dueDate)) {
         categories.dueSoon.push(task);
@@ -66,10 +69,10 @@ function App() {
     return categories;
   }, [tasks]);
 
-  const displayedTasks: [string, Task[]][] =
-    category === 'all'
-      ? Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0)
-      : [[category, categorizedTasks[category] || []]];
+  const displayedTasks: [string, Task[]][] = useMemo(() => {
+    const nonEmptyCategories = Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0);
+    return category === 'all' ? nonEmptyCategories : [[category, categorizedTasks[category] || []]];
+  }, [category, categorizedTasks]);
 
   console.log('App is rendering, number of tasks:', tasks.length);
 
@@ -90,6 +93,7 @@ function App() {
             setInput('');
             setDueDate('');
             setPriority('low');
+            setCategory('all');
           }}
         />
         <FilterButtons category={category} setCategory={setCategory} />
