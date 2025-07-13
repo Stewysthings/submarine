@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import type { Task } from './types';
 import { isOverdue, isDueSoon } from './utils';
 
@@ -50,33 +49,6 @@ const TaskList: React.FC<TaskListProps> = ({
   cancelEdit,
   removingId,
 }) => {
-  const [addedIds, setAddedIds] = useState<string[]>([]);
-  const [completedIds, setCompletedIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    const allTaskIds = displayedTasks.flatMap(([_, tasks]) => tasks.map(task => task.id));
-    const newTaskIds = allTaskIds.filter(id => !addedIds.includes(id));
-    if (newTaskIds.length > 0) {
-      setAddedIds(prev => [...prev, ...newTaskIds]);
-      setTimeout(() => {
-        setAddedIds(prev => prev.filter(id => !newTaskIds.includes(id)));
-      }, 300); // Match animation duration
-    }
-  }, [displayedTasks, addedIds]);
-
-  useEffect(() => {
-    const completedTaskIds = displayedTasks
-      .flatMap(([_, tasks]) => tasks)
-      .filter(task => task.completed && !completedIds.includes(task.id))
-      .map(task => task.id);
-    if (completedTaskIds.length > 0) {
-      setCompletedIds(prev => [...prev, ...completedTaskIds]);
-      setTimeout(() => {
-        setCompletedIds(prev => prev.filter(id => !completedTaskIds.includes(id)));
-      }, 300); // Match animation duration
-    }
-  }, [displayedTasks, completedIds]);
-
   return (
     <>
       {displayedTasks.some(([_, tasks]) => tasks.length > 0) ? (
@@ -95,7 +67,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 return (
                   <li
                     key={task.id}
-                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''} ${addedIds.includes(task.id) ? 'added' : ''} ${completedIds.includes(task.id) ? 'completed' : ''}`}
+                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''}`}
                     aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate) ? 'Overdue' : isDueSoon(task.dueDate) ? 'Due soon' : ''}`}
                   >
                     <input
