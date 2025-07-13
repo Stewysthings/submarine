@@ -54,8 +54,8 @@ const TaskList: React.FC<TaskListProps> = ({
       {displayedTasks.some(([_, tasks]) => tasks.length > 0) ? (
         displayedTasks.map(([cat, tasks]) => (
           <div key={cat} className="category-section">
-            <h2 className="text-xl font-bold">{categoryLabels[cat] || cat}</h2>
-            <ul className="task-list space-y-2">
+            <h2 className="category-heading">{categoryLabels[cat] || cat}</h2>
+            <ul className="task-list">
               {tasks.map((task) => {
                 const statusClass = !task.completed
                   ? isOverdue(task.dueDate)
@@ -74,11 +74,11 @@ const TaskList: React.FC<TaskListProps> = ({
                       type="checkbox"
                       checked={task.completed}
                       onChange={() => toggleTask(task.id)}
-                      className="h-5 w-5"
+                      className="task-checkbox"
                       aria-checked={task.completed}
                     />
                     {editingId === task.id ? (
-                      <div className="edit-container flex gap-2" onClick={(e) => e.stopPropagation()}>
+                      <div className="edit-container" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="text"
                           value={editText}
@@ -87,7 +87,6 @@ const TaskList: React.FC<TaskListProps> = ({
                             if (e.key === 'Enter') saveEdit(task.id);
                             if (e.key === 'Escape') cancelEdit();
                           }}
-                          onBlur={() => saveEdit(task.id)}
                           className="edit-input"
                           placeholder="Update task description"
                           autoFocus
@@ -104,6 +103,7 @@ const TaskList: React.FC<TaskListProps> = ({
                         <select
                           value={editPriority}
                           onChange={(e) => setEditPriority(e.target.value as 'low' | 'medium' | 'high')}
+                          onClick={(e) => e.stopPropagation()}
                           className="priority-selector"
                           aria-label="Edit priority"
                         >
@@ -131,7 +131,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     ) : (
                       <>
                         <span
-                          className={`task-text flex-1 ${statusClass}`}
+                          className={`task-text ${statusClass}`}
                           onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority)}
                         >
                           {task.text} {task.dueDate && `(${formatDueDate(task.dueDate)})`}
@@ -171,3 +171,5 @@ const TaskList: React.FC<TaskListProps> = ({
 };
 
 export default TaskList;
+
+
