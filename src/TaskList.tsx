@@ -18,7 +18,6 @@ interface TaskListProps {
   setEditPriority: (priority: 'low' | 'medium' | 'high') => void;
   saveEdit: (id: string) => void;
   cancelEdit: () => void;
-  removingId: string | null;
 }
 
 function formatDueDate(dueDate?: string): string {
@@ -47,11 +46,10 @@ const TaskList: React.FC<TaskListProps> = ({
   setEditPriority,
   saveEdit,
   cancelEdit,
-  removingId,
 }) => {
   return (
-    <>
-      {displayedTasks.some(([_, tasks]) => tasks.length > 0) ? (
+    <div className="task-list-container">
+      {displayedTasks.length > 0 ? (
         displayedTasks.map(([cat, tasks]) => (
           <div key={cat} className="category-section">
             <h2 className="category-heading">{categoryLabels[cat] || cat}</h2>
@@ -63,12 +61,12 @@ const TaskList: React.FC<TaskListProps> = ({
                     : isDueSoon(task.dueDate)
                       ? 'due-soon'
                       : `priority-${task.priority}`
-                  : '';
+                  : 'completed';
                 return (
                   <li
                     key={task.id}
-                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''}`}
-                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate) ? 'Overdue' : isDueSoon(task.dueDate) ? 'Due soon' : ''}`}
+                    className={`task-item ${statusClass}`}
+                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
                   >
                     <input
                       type="checkbox"
@@ -166,10 +164,8 @@ const TaskList: React.FC<TaskListProps> = ({
       ) : (
         <p className="no-tasks">No tasks found</p>
       )}
-    </>
+    </div>
   );
 };
 
 export default TaskList;
-
-
