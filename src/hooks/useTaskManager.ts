@@ -70,14 +70,17 @@ export function useTaskManager() {
   };
 
   const saveEdit = (id: string) => {
-    if (!editingState.text.trim() || editingState.id === null) return;
+    if (!editingState.text.trim() || editingState.id === null) {
+      cancelEdit(); // Cancel if text is empty
+      return;
+    }
     console.log('Saving edit for task ID:', editingState.id, editingState);
     setTasks(
       tasks.map((task) =>
         task.id === id
           ? {
               ...task,
-              text: editingState.text,
+              text: editingState.text.trim(),
               dueDate: editingState.dueDate || undefined,
               priority: editingState.priority || 'low',
             }
