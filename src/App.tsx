@@ -79,7 +79,7 @@ function App() {
     <ErrorBoundary>
       <div className="app">
         <h1>To-Do List</h1>
-        <p>Submarine is surfacing…</p>
+        <p className="submarine-message">Submarine is surfacing…</p>
         <TaskInput
           input={input}
           dueDate={dueDate}
