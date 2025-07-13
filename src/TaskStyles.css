@@ -1,0 +1,108 @@
+/* Task list container styling */
+.task-list-container {
+  width: 100%;
+}
+
+/* Category section styling */
+.category-section {
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Category heading styling */
+.category-heading {
+  font-size: 1.4em;
+  color: #333;
+  margin: 20px 0 10px;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Task list styling */
+.task-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+/* Task item styling */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background-color: #fff;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  transition: box-shadow 0.2s;
+}
+
+.task-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Overdue task styling */
+.task-item.overdue {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+}
+
+.task-item.overdue .task-text::after {
+  content: " (overdue)";
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+/* Due soon task styling */
+.task-item.due-soon {
+  background-color: #fffbea;
+  border-left: 4px solid orange;
+}
+
+.task-text.due-soon {
+  font-weight: bold;
+  color: #ff8c00;
+}
+
+.task-item.due-soon .task-text::after {
+  content: " (due soon)";
+  color: #ff8c00;
+  font-weight: bold;
+}
+
+/* Completed task styling */
+.task-item.completed {
+  background-color: #f0f0f0;
+  text-decoration: line-through;
+}
+
+/* Task checkbox styling */
+.task-checkbox {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+/* Task text styling */
+.task-text {
+  flex: 1;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+/* Edit container styling */
+.edit-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+/* No tasks message styling */
+.no-tasks {
+  color: #666;
+  font-size: 1.1em;
+  margin-top: 20px;
+  text-align: center;
+}

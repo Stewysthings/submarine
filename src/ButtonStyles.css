@@ -1,0 +1,112 @@
+/* Base button styling for all action buttons */
+.add-button, .edit-button, .delete-button, .save-button, .cancel-button {
+  padding: 8px 15px; /* Narrower padding for consistent size */
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+/* Add task button styling (blue, matches odd button) */
+.add-button {
+  background-color: #007bff;
+  color: white;
+  min-width: 100px; /* Match category button width */
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* Edit button styling */
+.edit-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+/* Delete button styling */
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Save button styling */
+.save-button {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #138496;
+  transform: translateY(-1px);
+}
+
+/* Cancel button styling */
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Container for filter buttons */
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 40px;
+  padding-top: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Filter label styling */
+.filter-label {
+  font-size: 1em;
+  color: #333;
+  margin-right: 10px;
+}
+
+/* Filter button styling */
+.filter-buttons button {
+  padding: 8px 15px; /* Smaller padding for fit */
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  min-width: 90px; /* Adjusted for more buttons to fit */
+}
+
+.filter-buttons button:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-1px);
+}
+
+/* Active filter button styling */
+.filter-buttons button.active {
+  background-color: #6c757d;
+  color: white;
+}
+
+.filter-buttons button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
