@@ -1,6 +1,7 @@
 import type { Task } from './types';
 
 export const categoryLabels: Record<string, string> = {
+  overdue: 'Overdue',
   dueSoon: 'Due Soon',
   today: 'Today',
   thisweek: 'This Week',
@@ -28,12 +29,9 @@ export const getMonthEnd = () => {
 export const isOverdue = (dueDate?: string): boolean => {
   if (!dueDate) return false;
   try {
-    const due = new Date(dueDate); // parses the full timestamp (YYYY-MM-DDTHH:mm)
-
-    // optional: strip off seconds/ms
+    const due = new Date(dueDate);
     const now = new Date();
-    now.setSeconds(0, 0); // optional to align with dueDate precision
-
+    now.setSeconds(0, 0);
     return due.getTime() < now.getTime();
   } catch (error) {
     console.warn('Invalid dueDate for overdue check:', dueDate, error);
@@ -41,23 +39,24 @@ export const isOverdue = (dueDate?: string): boolean => {
   }
 };
 
+export const isDueSoon = (dueDate?: string): boolean => {
+  if (!dueDate) return false;
+  const now = new Date().getTime();
+  const due = new Date(dueDate).getTime();
+  return due > now && due <= now + 24 * 60 * 60 * 1000;
+};
 
-
-export const categorizeTask = (task: Task): 'dueSoon' | 'today' | 'thisweek' | 'thismonth' | 'someday' => {
+export const categorizeTask = (task: Task): 'today' | 'thisweek' | 'thismonth' | 'someday' => {
   if (!task.dueDate) return 'someday';
-
-  const due = new Date(task.dueDate);
-  due.setSeconds(0, 0); // Align precision
-
-  const now = new Date();
-  const in24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-
+  const datePart = task.dueDate.split('T')[0];
+  const [year, month, day] = datePart.split('-').map(Number);
+  const due = new Date(year, month - 1, day);
+  due.setHours(0, 0, 0, 0);
 
   const today = getToday();
   const weekEnd = getWeekEnd();
   const monthEnd = getMonthEnd();
 
-  if (due < in24Hours && due > now) return 'dueSoon';
   if (due.getTime() === today.getTime()) return 'today';
   if (due <= weekEnd) return 'thisweek';
   if (due <= monthEnd) return 'thismonth';
