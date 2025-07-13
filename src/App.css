@@ -188,3 +188,26 @@ button:hover {
 .edit-input:focus {
   border-color: #007bff;
 }
+
+.priority-label {
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.priority-label.low {
+  background-color: #e0fbe0;
+  color: green;
+}
+
+.priority-label.medium {
+  background-color: #fff5cc;
+  color: orange;
+}
+
+.priority-label.high {
+  background-color: #ffe4e1;
+  color: red;
+}
