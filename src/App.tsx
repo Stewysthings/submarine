@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
 import './App.css';
 import type { Task } from './types';
-import TaskInput from './components/TaskInput';
-import TaskList from './components/TaskList';
-import FilterButtons from './components/FilterButtons';
+import TaskInput from './TaskInput';
+import TaskList from './TaskList';
+import FilterButtons from './FilterButtons';
 import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils';
 import { useTaskManager } from './hooks/useTaskManager';
 import React from 'react';
