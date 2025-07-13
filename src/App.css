@@ -204,7 +204,7 @@ h1 {
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #dee2e6;
-  transition: box-shadow 0.2s, opacity 0.3s, transform 0.3s;
+  transition: box-shadow 0.2s;
 }
 
 .task-item:hover {
@@ -291,52 +291,6 @@ h1 {
 .priority-label.high {
   background-color: #ffe4e1;
   color: red;
-}
-
-.task-item.removing {
-  animation: fadeOutLeft 0.3s ease forwards;
-}
-
-@keyframes fadeOutLeft {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-}
-
-.task-item.added {
-  animation: slideIn 0.3s ease forwards;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.task-item.completed {
-  animation: completed 0.3s ease forwards;
-}
-
-@keyframes completed {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.95);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 .no-tasks {
