@@ -10,10 +10,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
   color: #333;
   margin-bottom: 20px;
   font-size: 2.5em;
@@ -21,7 +21,6 @@ h1 {
 }
 
 .submarine-message {
-  text-align: center;
   color: #666;
   margin-bottom: 20px;
   font-size: 1.1em;
@@ -29,7 +28,6 @@ h1 {
 
 .error {
   color: #ff4d4d;
-  text-align: center;
   padding: 20px;
   background-color: #ffe6e6;
   border-radius: 4px;
@@ -39,7 +37,7 @@ h1 {
 .input-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
   width: 100%;
 }
@@ -146,7 +144,7 @@ h1 {
 .filter-buttons {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
@@ -178,15 +176,16 @@ h1 {
 }
 
 .category-section {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   width: 100%;
 }
 
-.category-section h2 {
+.category-heading {
   font-size: 1.4em;
   color: #333;
   margin: 10px 0;
   font-weight: 500;
+  text-align: left;
 }
 
 .task-list {
@@ -238,7 +237,7 @@ h1 {
   font-weight: bold;
 }
 
-.task-item input[type="checkbox"] {
+.task-checkbox {
   cursor: pointer;
   width: 20px;
   height: 20px;
@@ -295,7 +294,6 @@ h1 {
 
 .no-tasks {
   color: #666;
-  text-align: center;
   font-size: 1.1em;
   margin-top: 20px;
 }
