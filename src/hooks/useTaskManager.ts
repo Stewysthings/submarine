@@ -30,6 +30,10 @@ export const useTaskManager = () => {
     dueDate: '',
   });
 
+ const [removingId, setRemovingId] = useState<number | null>(null);
+
+
+
   // 💾 Save tasks to localStorage whenever tasks change
   useEffect(() => {
     console.log('Saving tasks:', tasks);
@@ -55,9 +59,14 @@ export const useTaskManager = () => {
 
   // ❌ Delete a task by ID
   const deleteTask = (id: number) => {
-    console.log('Deleting task ID:', id);
+  console.log('Deleting task ID:', id);
+  setRemovingId(id); // flag for removal animation
+
+  setTimeout(() => {
     setTasks(tasks.filter((task) => task.id !== id));
-  };
+    setRemovingId(null); // clear the flag
+  }, 300); // matches your fade-out CSS timing
+};
 
   // ✅ Toggle task completion status
   const toggleTask = (id: number) => {
@@ -101,15 +110,18 @@ export const useTaskManager = () => {
 
   // 📤 Return all state and handlers to consuming component
   return {
-    tasks,
-    setTasks,
-    editingState,
-    setEditingState,
-    addTask,
-    deleteTask,
-    toggleTask,
-    startEdit,
-    saveEdit,
-    cancelEdit,
+  tasks,
+  setTasks,
+  editingState,
+  setEditingState,
+  addTask,
+  deleteTask,
+  toggleTask,
+  startEdit,
+  saveEdit,
+  cancelEdit,
+  removingId, // 👈 add this!
+  setRemovingId, // optional, if needed later
+
   };
 };
