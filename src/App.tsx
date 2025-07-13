@@ -34,7 +34,7 @@ function App() {
     toggleTask,
     startEdit,
     saveEdit,
-    removingId,
+    cancelEdit,
   } = useTaskManager();
 
   const [category, setCategory] = useState<
@@ -53,24 +53,22 @@ function App() {
       thismonth: [],
       someday: [],
     };
-    tasks
-      .filter((task) => !task.completed)
-      .forEach((task) => {
-        if (isOverdue(task.dueDate)) {
-          categories.overdue.push(task);
-        } else if (isDueSoon(task.dueDate)) {
-          categories.dueSoon.push(task);
-        } else {
-          const cat = categorizeTask(task);
-          categories[cat].push(task);
-        }
-      });
+    tasks.forEach((task) => {
+      if (isOverdue(task.dueDate)) {
+        categories.overdue.push(task);
+      } else if (isDueSoon(task.dueDate)) {
+        categories.dueSoon.push(task);
+      } else {
+        const cat = categorizeTask(task);
+        categories[cat].push(task);
+      }
+    });
     return categories;
   }, [tasks]);
 
   const displayedTasks: [string, Task[]][] =
     category === 'all'
-      ? Object.entries(categorizedTasks)
+      ? Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0)
       : [[category, categorizedTasks[category] || []]];
 
   console.log('App is rendering, number of tasks:', tasks.length);
@@ -111,8 +109,7 @@ function App() {
           setEditDueDate={(dueDate) => setEditingState({ ...editingState, dueDate })}
           setEditPriority={(priority) => setEditingState({ ...editingState, priority })}
           saveEdit={saveEdit}
-          cancelEdit={() => setEditingState({ id: null, text: '', dueDate: '', priority: 'low' })}
-          removingId={removingId}
+          cancelEdit={cancelEdit}
         />
       </div>
     </ErrorBoundary>
