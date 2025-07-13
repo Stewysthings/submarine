@@ -19,7 +19,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
 }) => {
   return (
     <div className="flex space-x-2 mb-4">
-      {/* Add a task field */}
+      
       <input
         type="text"
         value={input}
@@ -30,7 +30,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         aria-label="Task description"
       />
       <input
-      {/* Set the due date field */}
+      /* Set the due date field */
         type="datetime-local"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
@@ -38,7 +38,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         aria-label="Task due date"
       />
       <select
-      {/* Set the priority field */}
+      /* Set the priority field */
         value={priority}
         onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
         className="p-2 bg-gray-800 text-white border border-gray-600 rounded"
@@ -49,7 +49,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         <option value="high">High</option>
 
       </select>
-      {/* Add task button */}
+      
       <button
         type="button"
         onClick={addTask}

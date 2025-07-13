@@ -76,10 +76,13 @@ function App() {
     return categories;
   }, [tasks]);
 
-  // Memoize displayed tasks based on selected category
+  // Memoize displayed tasks with a default value
   const displayedTasks: [string, Task[]][] = useMemo(() => {
+    if (!categorizedTasks) return []; // Default to empty array if categorizedTasks is undefined
     const nonEmptyCategories = Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0);
-    return category === 'all' ? nonEmptyCategories : [[category, categorizedTasks[category] || []]];
+    return category === 'all'
+      ? nonEmptyCategories
+      : [[category, categorizedTasks[category] ?? []]]; // Use nullish coalescing for safety
   }, [category, categorizedTasks]);
 
   console.log('App is rendering, number of tasks:', tasks.length); // Log rendering details
