@@ -13,7 +13,7 @@ export function useTaskManager() {
             text: t.text || '',
             dueDate: t.dueDate || undefined,
             completed: t.completed || false,
-            priority: t.priority || 'low', // Ensure priority is set
+            priority: t.priority || 'low',
           })).filter((t: Task) => t.id && t.text)
         : [];
     } catch (error) {
@@ -28,8 +28,6 @@ export function useTaskManager() {
     dueDate: '',
     priority: 'low',
   });
-
-  const [removingId, setRemovingId] = useState<string | null>(null);
 
   useEffect(() => {
     console.log('Saving tasks:', tasks);
@@ -47,18 +45,14 @@ export function useTaskManager() {
       text: text.trim(),
       dueDate: dueDate || undefined,
       completed: false,
-      priority: priority || 'low', // Ensure priority is set
+      priority: priority || 'low',
     };
     setTasks([...tasks, newTask]);
   };
 
   const deleteTask = (id: string) => {
     console.log('Deleting task ID:', id);
-    setRemovingId(id);
-    setTimeout(() => {
-      setTasks((prev) => prev.filter((task) => task.id !== id));
-      setRemovingId(null);
-    }, 300); // Match CSS animation duration
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   const toggleTask = (id: string) => {
@@ -85,7 +79,7 @@ export function useTaskManager() {
               ...task,
               text: editingState.text,
               dueDate: editingState.dueDate || undefined,
-              priority: editingState.priority || 'low', // Ensure priority is set
+              priority: editingState.priority || 'low',
             }
           : task
       )
@@ -109,6 +103,5 @@ export function useTaskManager() {
     startEdit,
     saveEdit,
     cancelEdit,
-    removingId,
   };
 }
