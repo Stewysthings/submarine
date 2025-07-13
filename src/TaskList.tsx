@@ -109,6 +109,10 @@ const TaskList: React.FC<TaskListProps> = ({
                     )}
                       <span className={`priority ${task.priority}`}>{task.priority}</span>
                     <button type="button" onClick={() => deleteTask(task.id)}>Delete</button>
+                    <li
+                      key={task.id}
+                    className={`task-item ${statusClass} ${removingId === task.id ? 'removing' : ''}`}
+                  ></li>
                   </li>
                 );
               })}
