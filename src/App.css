@@ -211,3 +211,18 @@ button:hover {
   background-color: #ffe4e1;
   color: red;
 }
+
+.task-item.removing {
+  animation: fadeOutLeft 0.3s ease forwards;
+}
+
+@keyframes fadeOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}

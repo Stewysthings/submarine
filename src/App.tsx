@@ -36,6 +36,7 @@ function App() {
     toggleTask,
     startEdit,
     saveEdit,
+    removingId,
   } = useTaskManager();
 
   const [category, setCategory] = useState<'all' | 'today' | 'thisweek' | 'thismonth' | 'someday'>('all');
