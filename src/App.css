@@ -274,6 +274,21 @@ h1 {
   }
 }
 
+.task-item.added {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .no-tasks {
   color: #666;
   text-align: center;
