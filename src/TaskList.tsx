@@ -47,9 +47,14 @@ const TaskList: React.FC<TaskListProps> = ({
   saveEdit,
   cancelEdit,
 }) => {
+  // Type guard to handle undefined or invalid displayedTasks
+  if (!displayedTasks || !Array.isArray(displayedTasks)) {
+    return <p className="no-tasks">No tasks available</p>;
+  }
+
   return (
     <div className="task-list-container">
-      {displayedTasks.length > 0 ? (
+      {displayedTasks.length > 0 ? ( // Safe length check
         displayedTasks.map(([cat, tasks]) => (
           <div key={cat} className="category-section">
             <h2 className="category-heading">{categoryLabels[cat] || cat}</h2>
