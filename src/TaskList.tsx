@@ -1,24 +1,7 @@
 import type { Task } from './types';
-// Removed unused imports since isOverdue and isDueSoon are provided as props
+import type { TaskListProps } from './TaskListProps'; // Import instead of defining inline
 
-interface TaskListProps {
-  displayedTasks: [string, Task[]][];
-  toggleTask: (id: string) => void;
-  deleteTask: (id: string) => void;
-  startEdit: (id: string, text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => void;
-  isOverdue: (dueDate?: string, completed?: boolean) => boolean;
-  isDueSoon: (dueDate?: string) => boolean;
-  categoryLabels: Record<string, string>;
-  editingId: string | null;
-  editText: string;
-  editDueDate: string;
-  editPriority: 'low' | 'medium' | 'high';
-  setEditText: (text: string) => void;
-  setEditDueDate: (dueDate: string) => void;
-  setEditPriority: (priority: 'low' | 'medium' | 'high') => void;
-  saveEdit: (id: string) => void;
-  cancelEdit: () => void;
-}
+
 
 function formatDueDate(dueDate?: string): string {
   if (!dueDate) return '';
@@ -46,6 +29,8 @@ const TaskList: React.FC<TaskListProps> = ({
   setEditPriority,
   saveEdit,
   cancelEdit,
+  activeCategory,
+  onCategoryChange,
 }) => {
   // Type guard to handle undefined or invalid displayedTasks
   if (!displayedTasks || !Array.isArray(displayedTasks)) {

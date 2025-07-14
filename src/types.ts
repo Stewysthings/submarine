@@ -12,3 +12,7 @@ export interface EditingState {
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
 }
+
+// Add this to your existing types.ts file
+export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
+

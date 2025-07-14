@@ -4,13 +4,13 @@ import './AppLayout.css'; // Import layout styles
 import './ButtonStyles.css'; // Import button styles
 import './TaskStyles.css'; // Import task-related styles
 import './FormStyles.css'; // Import form and input styles
-import type { Task } from './types'; // Type definition for tasks
 import TaskInput from './TaskInput'; // Input component for adding tasks
 import TaskList from './TaskList'; // Component to display tasks
 import FilterButtons from './FilterButtons'; // Filter buttons component
 import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils'; // Utility functions
 import { useTaskManager } from './hooks/useTaskManager'; // Custom task management hook
 import React from 'react'; // React library
+import type { Task, TaskCategory } from './types';
 
 /* ErrorBoundary class to catch and display JavaScript errors gracefully */
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: string | null }> {
@@ -42,9 +42,7 @@ function App() {
     cancelEdit,
   } = useTaskManager(); // Destructure task management functions and state
 
-  const [category, setCategory] = useState<
-    'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed'
-  >('all'); // State to manage active filter category
+  const [category, setCategory] = useState<TaskCategory>('all'); // State to manage active filter category
 
   const [input, setInput] = useState(''); // State for task input text
   const [dueDate, setDueDate] = useState(''); // State for task due date
@@ -107,7 +105,7 @@ function App() {
             setCategory('all'); // Reset to show all tasks after adding
           }}
         />
-        <FilterButtons activeCategory={category} onCategoryChange={setCategory} />
+        <FilterButtons category={category} onCategoryChange={setCategory} />
         <TaskList
           displayedTasks={displayedTasks}
           toggleTask={toggleTask}
@@ -125,6 +123,8 @@ function App() {
           setEditPriority={(priority) => setEditingState({ ...editingState, priority })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}
+          activeCategory={category}
+          onCategoryChange={setCategory}
         />
       </div>
     </ErrorBoundary>

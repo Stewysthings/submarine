@@ -1,7 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
-import type { Task, TaskCategory } from './types';
+import type { Task } from './types';
 
-export interface TaskListProps {
+type CategoryType = "overdue" | "completed" | "all" | "today" | "thisweek" | "thismonth" | "someday" | "dueSoon";
+
+export interface TaskListProps {  // Make sure you have 'export' here
   displayedTasks: [string, Task[]][];
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
@@ -13,12 +15,11 @@ export interface TaskListProps {
   editText: string;
   editDueDate: string;
   editPriority: 'low' | 'medium' | 'high';
-  setEditText: Dispatch<SetStateAction<string>>;
-  setEditDueDate: Dispatch<SetStateAction<string>>;
-  setEditPriority: Dispatch<SetStateAction<'low' | 'medium' | 'high'>>;
+  setEditText: (text: string) => void;
+  setEditDueDate: (dueDate: string) => void;
+  setEditPriority: (priority: 'low' | 'medium' | 'high') => void;
   saveEdit: (id: string) => void;
   cancelEdit: () => void;
-  activeCategory: TaskCategory;
-  onCategoryChange: Dispatch<SetStateAction<TaskCategory>>;
+  activeCategory: CategoryType;
+  onCategoryChange: Dispatch<SetStateAction<CategoryType>>;
 }
-
