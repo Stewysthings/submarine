@@ -107,7 +107,7 @@ function App() {
             setCategory('all'); // Reset to show all tasks after adding
           }}
         />
-        <FilterButtons category={category} setCategory={setCategory} /> {/* Pass category and setCategory to FilterButtons */}
+        <FilterButtons activeCategory={category} onCategoryChange={setCategory} />
         <TaskList
           displayedTasks={displayedTasks}
           toggleTask={toggleTask}
@@ -125,7 +125,7 @@ function App() {
           setEditPriority={(priority) => setEditingState({ ...editingState, priority })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}
-        /> {/* Pass only TaskListProps to TaskList */}
+        />
       </div>
     </ErrorBoundary>
   );

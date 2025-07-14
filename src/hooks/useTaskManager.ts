@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Task, EditingState } from './types';
+import type { Task, EditingState } from '../types';
 
 export function useTaskManager() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -43,7 +43,7 @@ export function useTaskManager() {
     const newTask: Task = {
       id: crypto.randomUUID(),
       text: text.trim(),
-      dueDate: dueDate || undefined,
+      dueDate: dueDate || '',
       completed: false,
       priority: priority || 'low',
     };
@@ -64,9 +64,14 @@ export function useTaskManager() {
     );
   };
 
-  const startEdit = (id: string, text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => {
+  const startEdit = (id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high') => {
     console.log('Editing task ID:', id);
-    setEditingState({ id, text, dueDate: dueDate || '', priority: priority || 'low' });
+    setEditingState({ 
+      id, 
+      text, 
+      dueDate: dueDate || '', // This converts undefined to empty string
+      priority: priority || 'low' 
+    });
   };
 
   const saveEdit = (id: string) => {
@@ -81,7 +86,7 @@ export function useTaskManager() {
           ? {
               ...task,
               text: editingState.text.trim(),
-              dueDate: editingState.dueDate || undefined,
+              dueDate: editingState.dueDate,
               priority: editingState.priority || 'low',
             }
           : task

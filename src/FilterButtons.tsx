@@ -1,5 +1,5 @@
 import type { Task } from './types';
-import { isOverdue, isDueSoon } from './utils';
+// Removing unused imports
 
 interface TaskListProps {
   displayedTasks: [string, Task[]][];

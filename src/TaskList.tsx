@@ -1,5 +1,5 @@
 import type { Task } from './types';
-import { isOverdue, isDueSoon } from './utils';
+// Removed unused imports since isOverdue and isDueSoon are provided as props
 
 interface TaskListProps {
   displayedTasks: [string, Task[]][];
@@ -54,7 +54,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <div className="task-list-container">
-      {displayedTasks.length > 0 ? ( // Safe length check
+      {displayedTasks.length > 0 ? (
         displayedTasks.map(([cat, tasks]) => (
           <div key={cat} className="category-section">
             <h2 className="category-heading">{categoryLabels[cat] || cat}</h2>
