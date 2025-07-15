@@ -3,6 +3,7 @@
   padding: 1rem;
   border-radius: 0.5rem;
   border: 1px solid #374151;
+  margin-bottom: 1rem;
 }
 
 .task-input-container .flex {
@@ -12,10 +13,23 @@
 
 .task-input-container input[type="checkbox"] {
   accent-color: #06b6d4;
+  width: 16px;
+  height: 16px;
 }
 
+/* Fix the checkbox label text color and spacing */
 .task-input-container label {
   user-select: none;
+  color: #ffffff !important; /* Force white text */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 2rem; /* Add space between checkbox and buttons */
+}
+
+.task-input-container label span {
+  color: #ffffff !important; /* Force white text for the span too */
+  font-size: 0.875rem;
 }
 
 /* Make sure the date input is wide enough */
@@ -24,12 +38,57 @@
   min-width: 180px;
 }
 
-/* Style the quick action buttons */
+/* Fix spacing between quick action buttons */
+.task-input-container .flex.items-center.justify-between {
+  margin-top: 0.75rem;
+}
+
+.task-input-container .flex.space-x-2 > button {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Style the quick action buttons with better spacing */
+.task-input-container .flex.space-x-2:last-child {
+  gap: 0.75rem; /* More space between buttons */
+}
+
+.task-input-container .flex.space-x-2:last-child button {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+/* Style the status text */
+.task-input-container .text-gray-400 {
+  color: #9ca3af !important;
+  font-style: italic;
+  margin-left: 1rem;
+}
+
+/* Style the main input row */
+.task-input-container .flex.space-x-2.mb-2 {
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Style the Add Task button */
 .task-input-container button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background-color: #6b7280 !important;
 }
 
 .task-input-container button:disabled:hover {
-  background-color: inherit;
+  background-color: #6b7280 !important;
+}
+
+/* Make sure all text in the container is visible */
+.task-input-container * {
+  color: inherit;
+}
+
+.task-input-container .text-white {
+  color: #ffffff !important;
 }
