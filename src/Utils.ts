@@ -1,16 +1,37 @@
 import type { Task } from './types';
 
-export function isOverdue(dueDate?: string, completed: boolean = false): boolean {
+export function isOverdue(dueDate?: string, completed: boolean = false, allDay: boolean = false): boolean {
   if (completed || !dueDate) return false;
   const now = new Date();
   const due = new Date(dueDate);
+  
+  if (allDay) {
+    // For all-day tasks, only overdue if the date has passed
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    due.setHours(0, 0, 0, 0);
+    return due < today;
+  }
+  
   return due < now;
 }
 
-export function isDueSoon(dueDate?: string): boolean {
+export function isDueSoon(dueDate?: string, allDay: boolean = false): boolean {
   if (!dueDate) return false;
   const now = new Date();
   const due = new Date(dueDate);
+  
+  if (allDay) {
+    // For all-day tasks, check if it's today or tomorrow
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    due.setHours(0, 0, 0, 0);
+    return due >= today && due < tomorrow;
+  }
+  
   const diff = due.getTime() - now.getTime();
   return diff >= 0 && diff <= 24 * 60 * 60 * 1000;
 }
@@ -31,22 +52,41 @@ function getEndOfMonth(date: Date): Date {
 }
 
 export function categorizeTask(task: Task): string {
-  const { dueDate } = task;
+  const { dueDate, allDay } = task;
   if (!dueDate) return 'someday';
   
   const now = new Date();
   const due = new Date(dueDate);
   
-  // Check if it's today
+  // For all-day tasks, compare dates only
+  if (allDay) {
+    const today = new Date(now);
+    today.setHours(0, 0, 0, 0);
+    const dueDay = new Date(due);
+    dueDay.setHours(0, 0, 0, 0);
+    
+    if (dueDay.getTime() === today.getTime()) return 'today';
+    if (dueDay < today) return 'today'; // overdue all-day tasks show as today
+    
+    const endOfThisWeek = getEndOfWeek(now);
+    endOfThisWeek.setHours(0, 0, 0, 0);
+    if (dueDay <= endOfThisWeek) return 'thisweek';
+    
+    const endOfThisMonth = getEndOfMonth(now);
+    endOfThisMonth.setHours(0, 0, 0, 0);
+    if (dueDay <= endOfThisMonth) return 'thismonth';
+    
+    return 'someday';
+  }
+  
+  // For timed tasks, use the existing logic
   const today = new Date(now);
   today.setHours(23, 59, 59, 999);
   if (due <= today) return 'today';
   
-  // Check if it's this week (until end of current calendar week)
   const endOfThisWeek = getEndOfWeek(now);
   if (due <= endOfThisWeek) return 'thisweek';
   
-  // Check if it's this month
   const endOfThisMonth = getEndOfMonth(now);
   if (due <= endOfThisMonth) return 'thismonth';
   

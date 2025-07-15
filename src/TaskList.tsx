@@ -1,9 +1,16 @@
 import type { Task } from './types';
 import type { TaskListProps } from './TaskListProps'; // Import instead of defining inline
 
-function formatDueDate(dueDate?: string): string {
+function formatDueDate(dueDate?: string, allDay?: boolean): string {
   if (!dueDate) return '';
   const date = new Date(dueDate);
+  
+  if (allDay) {
+    return date.toLocaleDateString([], {
+      dateStyle: 'short',
+    });
+  }
+  
   return date.toLocaleString([], {
     dateStyle: 'short',
     timeStyle: 'short',

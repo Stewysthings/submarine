@@ -1,10 +1,14 @@
 export interface Task {
   id: string;
-  text: string;
-  dueDate: string;
+  title: string;
+  description?: string;
+  dueDate?: string; // ISO string for date/time
+  dueTime?: string; // Optional time in HH:MM format
+  allDay?: boolean; // Flag to indicate if it's an all-day task
   completed: boolean;
-  priority: 'low' | 'medium' | 'high';
+  createdAt: string;
 }
+
 
 export interface EditingState {
   id: string | null;
