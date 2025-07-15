@@ -1,0 +1,35 @@
+.task-input-container {
+  background: #1f2937;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #374151;
+}
+
+.task-input-container .flex {
+  display: flex;
+  align-items: center;
+}
+
+.task-input-container input[type="checkbox"] {
+  accent-color: #06b6d4;
+}
+
+.task-input-container label {
+  user-select: none;
+}
+
+/* Make sure the date input is wide enough */
+.task-input-container input[type="date"],
+.task-input-container input[type="datetime-local"] {
+  min-width: 180px;
+}
+
+/* Style the quick action buttons */
+.task-input-container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.task-input-container button:disabled:hover {
+  background-color: inherit;
+}
