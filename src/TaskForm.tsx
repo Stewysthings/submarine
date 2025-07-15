@@ -19,6 +19,8 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
   );
   const [allDay, setAllDay] = useState(initialTask?.allDay || false);
 
+  console.log('TaskForm render - dueDate:', dueDate, 'allDay:', allDay);
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -86,18 +88,23 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
         />
       </div>
 
-      {dueDate && (
-        <div className="form-group">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={allDay}
-              onChange={(e) => setAllDay(e.target.checked)}
-            />
-            All day task
-          </label>
-        </div>
-      )}
+      
+            {dueDate && (
+            <div className="form-group">
+                {console.log('Rendering checkbox section, dueDate:', dueDate)}
+                <label className="checkbox-label">
+                <input
+                    type="checkbox"
+                    checked={allDay}
+                    onChange={(e) => {
+                    console.log('Checkbox changed:', e.target.checked);
+                    setAllDay(e.target.checked);
+                    }}
+                />
+                All day task
+                </label>
+            </div>
+            )}
 
       {dueDate && !allDay && (
         <div className="form-group">
