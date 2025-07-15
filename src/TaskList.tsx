@@ -127,7 +127,7 @@ const TaskList: React.FC<TaskListProps> = ({
                           className={`task-text ${statusClass}`}
                           onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority)}
                         >
-                          {task.text} {task.dueDate && `(${formatDueDate(task.dueDate)})`}
+                          {task.text} {task.dueDate && `(${formatDueDate(task.dueDate, task.allDay)})`}
                         </span>
                         <span className={`priority-label ${task.priority ? task.priority.toLowerCase() : 'low'}`}>
                           {task.priority || 'Low'}
