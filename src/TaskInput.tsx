@@ -43,7 +43,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           value={allDay ? dueDate.split('T')[0] : dueDate}
           onChange={(e) => {
             if (allDay) {
-              setDueDate(e.target.value ? `${e.target.value}T12:00` : '');
+              setDueDate(e.target.value ? `${e.target.value}T23:59` : '');
             } else {
               setDueDate(e.target.value);
             }
@@ -87,7 +87,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
                 setAllDay(e.target.checked);
                 if (e.target.checked && dueDate) {
                   const dateOnly = dueDate.split('T')[0];
-                  setDueDate(`${dateOnly}T12:00`);
+                  setDueDate(`${dateOnly}T23:59`); // Changed from T12:00 to T23:59
                 }
               }}
               className="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500"
@@ -98,7 +98,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           {/* Show current date/time info */}
           {dueDate && (
             <span className="text-gray-400 ml-4 text-sm">
-              {allDay ? 'Full day task' : 'Specific time'}
+              {allDay ? 'Due end of day' : 'Specific time'}
             </span>
           )}
         </div>
@@ -109,8 +109,11 @@ const TaskInput: React.FC<TaskInputProps> = ({
             type="button"
             onClick={() => {
               const today = new Date();
-              const todayStr = today.toISOString().slice(0, 16);
-              setDueDate(todayStr);
+              const year = today.getFullYear();
+              const month = String(today.getMonth() + 1).padStart(2, '0');
+              const day = String(today.getDate()).padStart(2, '0');
+              const todayEndOfDay = `${year}-${month}-${day}T23:59`;
+              setDueDate(todayEndOfDay);
               setAllDay(false);
             }}
             className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
@@ -122,8 +125,11 @@ const TaskInput: React.FC<TaskInputProps> = ({
             onClick={() => {
               const tomorrow = new Date();
               tomorrow.setDate(tomorrow.getDate() + 1);
-              const tomorrowStr = tomorrow.toISOString().slice(0, 10);
-              setDueDate(`${tomorrowStr}T09:00`);
+              const year = tomorrow.getFullYear();
+              const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+              const day = String(tomorrow.getDate()).padStart(2, '0');
+              const tomorrowEndOfDay = `${year}-${month}-${day}T23:59`;
+              setDueDate(tomorrowEndOfDay);
               setAllDay(false);
             }}
             className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
