@@ -118,9 +118,12 @@ function App() {
           editText={editingState.text}
           editDueDate={editingState.dueDate}
           editPriority={editingState.priority}
-          setEditText={(text) => setEditingState({ ...editingState, text })}
-          setEditDueDate={(dueDate) => setEditingState({ ...editingState, dueDate })}
-          setEditPriority={(priority) => setEditingState({ ...editingState, priority })}
+          setEditText={(value: React.SetStateAction<string>) => 
+            setEditingState({ ...editingState, text: typeof value === 'function' ? value(editingState.text) : value })}
+          setEditDueDate={(value: React.SetStateAction<string>) => 
+            setEditingState({ ...editingState, dueDate: typeof value === 'function' ? value(editingState.dueDate) : value })}
+          setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) => 
+            setEditingState({ ...editingState, priority: typeof value === 'function' ? value(editingState.priority) : value })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}
           activeCategory={category}
