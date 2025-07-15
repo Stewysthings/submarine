@@ -1,5 +1,5 @@
 import React from 'react';
-import './TaskInput.css'; // Add this import
+import './TaskInput.css';
 
 interface TaskInputProps {
   input: string;
@@ -25,7 +25,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
   addTask,
 }) => {
   return (
-    <div className="task-input-container mb-4">
+    <div className="task-input-container">
       {/* Main input row */}
       <div className="flex space-x-2 mb-2">
         <input
@@ -74,18 +74,17 @@ const TaskInput: React.FC<TaskInputProps> = ({
         </button>
       </div>
       
-      {/* Date options row - shows immediately when date input is focused or has value */}
+      {/* Date options row */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          {/* All Day checkbox - always visible when there's any date interaction */}
-          <label className="flex items-center space-x-2 text-white cursor-pointer">
+        <div className="flex items-center">
+          {/* All Day checkbox */}
+          <label className="flex items-center cursor-pointer text-white">
             <input
               type="checkbox"
               checked={allDay}
               onChange={(e) => {
                 console.log('All day checkbox changed:', e.target.checked);
                 setAllDay(e.target.checked);
-                // If switching to all-day and there's a date, set time to noon
                 if (e.target.checked && dueDate) {
                   const dateOnly = dueDate.split('T')[0];
                   setDueDate(`${dateOnly}T12:00`);
@@ -93,19 +92,19 @@ const TaskInput: React.FC<TaskInputProps> = ({
               }}
               className="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500"
             />
-            <span className="text-sm">All day task</span>
+            <span className="text-white ml-2">All day task</span>
           </label>
           
           {/* Show current date/time info */}
           {dueDate && (
-            <span className="text-xs text-gray-400">
+            <span className="text-gray-400 ml-4 text-sm">
               {allDay ? 'Full day task' : 'Specific time'}
             </span>
           )}
         </div>
         
         {/* Quick date buttons */}
-        <div className="flex space-x-2">
+        <div className="flex space-x-3">
           <button
             type="button"
             onClick={() => {
@@ -114,7 +113,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
               setDueDate(todayStr);
               setAllDay(false);
             }}
-            className="px-2 py-1 text-xs bg-gray-700 text-white rounded hover:bg-gray-600"
+            className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
           >
             Today
           </button>
@@ -127,7 +126,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
               setDueDate(`${tomorrowStr}T09:00`);
               setAllDay(false);
             }}
-            className="px-2 py-1 text-xs bg-gray-700 text-white rounded hover:bg-gray-600"
+            className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
           >
             Tomorrow
           </button>
@@ -138,7 +137,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
                 setDueDate('');
                 setAllDay(false);
               }}
-              className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-500"
+              className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-500"
             >
               Clear
             </button>
