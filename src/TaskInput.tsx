@@ -67,7 +67,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         <button
           type="button"
           onClick={addTask}
-          className="p-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 whitespace-nowrap"
+          className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 whitespace-nowrap font-semibold"
           disabled={!input.trim()}
         >
           Add Task
@@ -87,7 +87,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
                 setAllDay(e.target.checked);
                 if (e.target.checked && dueDate) {
                   const dateOnly = dueDate.split('T')[0];
-                  setDueDate(`${dateOnly}T23:59`); // Changed from T12:00 to T23:59
+                  setDueDate(`${dateOnly}T23:59`);
                 }
               }}
               className="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500"
@@ -103,8 +103,8 @@ const TaskInput: React.FC<TaskInputProps> = ({
           )}
         </div>
         
-        {/* Quick date buttons */}
-        <div className="flex space-x-3">
+        {/* Quick date buttons with better spacing */}
+        <div className="flex space-x-4">
           <button
             type="button"
             onClick={() => {
@@ -116,7 +116,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
               setDueDate(todayEndOfDay);
               setAllDay(false);
             }}
-            className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium"
           >
             Today
           </button>
@@ -132,7 +132,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
               setDueDate(tomorrowEndOfDay);
               setAllDay(false);
             }}
-            className="px-3 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium"
           >
             Tomorrow
           </button>
@@ -143,7 +143,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
                 setDueDate('');
                 setAllDay(false);
               }}
-              className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-500"
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 font-medium"
             >
               Clear
             </button>
