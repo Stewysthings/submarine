@@ -1,22 +1,19 @@
 export interface Task {
   id: string;
-  title: string;
-  description?: string;
+  text: string; // Your code uses 'text', not 'title'
   dueDate?: string; // ISO string for date/time
-  dueTime?: string; // Optional time in HH:MM format
   allDay?: boolean; // Flag to indicate if it's an all-day task
   completed: boolean;
-  createdAt: string;
+  priority: 'low' | 'medium' | 'high'; // Your code uses priority
+  createdAt?: string; // Optional since your current code doesn't use it
 }
-
 
 export interface EditingState {
   id: string | null;
   text: string;
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
+  allDay?: boolean; // Add this for editing
 }
 
-// Add this to your existing types.ts file
 export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
-

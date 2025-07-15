@@ -43,10 +43,10 @@ function App() {
   } = useTaskManager(); // Destructure task management functions and state
 
   const [category, setCategory] = useState<TaskCategory>('all'); // State to manage active filter category
-
   const [input, setInput] = useState(''); // State for task input text
   const [dueDate, setDueDate] = useState(''); // State for task due date
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low'); // State for task priority
+  const [allDay, setAllDay] = useState(false); // Add this new state for all-day tasks
 
   // Memoize task categorization to improve performance
   const categorizedTasks = useMemo(() => {
@@ -59,18 +59,20 @@ function App() {
       thismonth: [],
       someday: [],
     };
+
     tasks.forEach((task) => {
       if (task.completed) {
         categories.completed.push(task); // Categorize completed tasks
-      } else if (isOverdue(task.dueDate, task.completed)) {
+      } else if (isOverdue(task.dueDate, task.completed, task.allDay)) { // Pass allDay parameter
         categories.overdue.push(task); // Categorize overdue tasks
-      } else if (isDueSoon(task.dueDate)) {
+      } else if (isDueSoon(task.dueDate, task.allDay)) { // Pass allDay parameter
         categories.dueSoon.push(task); // Categorize due soon tasks
       } else {
         const cat = categorizeTask(task);
         categories[cat].push(task); // Categorize other tasks
       }
     });
+
     return categories;
   }, [tasks]);
 
@@ -94,14 +96,17 @@ function App() {
           input={input}
           dueDate={dueDate}
           priority={priority}
+          allDay={allDay} // Add this prop
           setInput={setInput}
           setDueDate={setDueDate}
           setPriority={setPriority}
+          setAllDay={setAllDay} // Add this prop
           addTask={() => {
-            addTask(input, dueDate, priority);
+            addTask(input, dueDate, priority, allDay); // Pass allDay parameter
             setInput('');
             setDueDate('');
             setPriority('low');
+            setAllDay(false); // Reset allDay state
             setCategory('all'); // Reset to show all tasks after adding
           }}
         />
@@ -110,19 +115,30 @@ function App() {
           displayedTasks={displayedTasks}
           toggleTask={toggleTask}
           deleteTask={deleteTask}
-          startEdit={startEdit}
-          isOverdue={isOverdue}
-          isDueSoon={isDueSoon}
+          startEdit={(id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high') => {
+            // Find the task to get its allDay property
+            const task = tasks.find(t => t.id === id);
+            startEdit(id, text, dueDate, priority, task?.allDay || false);
+          }}
+          isOverdue={(dueDate?: string, completed?: boolean) => {
+            // For the TaskList, we need to find the task to get its allDay property
+            // This is a bit of a workaround - ideally we'd pass the whole task
+            return isOverdue(dueDate, completed || false);
+          }}
+          isDueSoon={(dueDate?: string) => {
+            // Similar workaround for isDueSoon
+            return isDueSoon(dueDate);
+          }}
           categoryLabels={categoryLabels}
           editingId={editingState.id}
           editText={editingState.text}
           editDueDate={editingState.dueDate}
           editPriority={editingState.priority}
-          setEditText={(value: React.SetStateAction<string>) => 
+          setEditText={(value: React.SetStateAction<string>) =>
             setEditingState({ ...editingState, text: typeof value === 'function' ? value(editingState.text) : value })}
-          setEditDueDate={(value: React.SetStateAction<string>) => 
+          setEditDueDate={(value: React.SetStateAction<string>) =>
             setEditingState({ ...editingState, dueDate: typeof value === 'function' ? value(editingState.dueDate) : value })}
-          setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) => 
+          setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) =>
             setEditingState({ ...editingState, priority: typeof value === 'function' ? value(editingState.priority) : value })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}

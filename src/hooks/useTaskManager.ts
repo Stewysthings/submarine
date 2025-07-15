@@ -14,6 +14,7 @@ export function useTaskManager() {
             dueDate: t.dueDate || undefined,
             completed: t.completed || false,
             priority: t.priority || 'low',
+            allDay: t.allDay || false, // Add this
           })).filter((t: Task) => t.id && t.text)
         : [];
     } catch (error) {
@@ -27,6 +28,7 @@ export function useTaskManager() {
     text: '',
     dueDate: '',
     priority: 'low',
+    allDay: false, // Add this
   });
 
   useEffect(() => {
@@ -38,14 +40,17 @@ export function useTaskManager() {
     }
   }, [tasks]);
 
-  const addTask = (text: string, dueDate: string, priority: 'low' | 'medium' | 'high') => {
+  // Update addTask to accept allDay parameter
+  const addTask = (text: string, dueDate: string, priority: 'low' | 'medium' | 'high', allDay: boolean = false) => {
     if (!text.trim()) return;
+    
     const newTask: Task = {
       id: crypto.randomUUID(),
       text: text.trim(),
       dueDate: dueDate || '',
       completed: false,
       priority: priority || 'low',
+      allDay: allDay,
     };
     setTasks([...tasks, newTask]);
   };
@@ -64,19 +69,21 @@ export function useTaskManager() {
     );
   };
 
-  const startEdit = (id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high') => {
+  // Update startEdit to include allDay
+  const startEdit = (id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high', allDay: boolean = false) => {
     console.log('Editing task ID:', id);
-    setEditingState({ 
-      id, 
-      text, 
-      dueDate: dueDate || '', // This converts undefined to empty string
-      priority: priority || 'low' 
+    setEditingState({
+      id,
+      text,
+      dueDate: dueDate || '',
+      priority: priority || 'low',
+      allDay: allDay,
     });
   };
 
   const saveEdit = (id: string) => {
     if (!editingState.text.trim() || editingState.id === null) {
-      cancelEdit(); // Cancel if text is empty
+      cancelEdit();
       return;
     }
     console.log('Saving edit for task ID:', editingState.id, editingState);
@@ -88,16 +95,17 @@ export function useTaskManager() {
               text: editingState.text.trim(),
               dueDate: editingState.dueDate,
               priority: editingState.priority || 'low',
+              allDay: editingState.allDay || false,
             }
           : task
       )
     );
-    setEditingState({ id: null, text: '', dueDate: '', priority: 'low' });
+    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false });
   };
 
   const cancelEdit = () => {
     console.log('Canceling edit');
-    setEditingState({ id: null, text: '', dueDate: '', priority: 'low' });
+    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false });
   };
 
   return {
