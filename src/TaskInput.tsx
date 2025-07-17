@@ -36,6 +36,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           onKeyDown={(e) => e.key === 'Enter' && addTask()}
           className="flex-1 p-2 bg-gray-800 text-white border border-gray-600 rounded"
           aria-label="Task description"
+          style={{ color: 'white' }}
         />
         
         <input
@@ -51,6 +52,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           className="p-2 bg-gray-800 text-white border border-gray-600 rounded min-w-[180px]"
           aria-label="Task due date"
           placeholder={allDay ? "Select date" : "Select date & time"}
+          style={{ color: 'white' }}
         />
         
         <select
@@ -58,6 +60,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
           className="p-2 bg-gray-800 text-white border border-gray-600 rounded"
           aria-label="Task priority"
+          style={{ color: 'white' }}
         >
           <option value="low">Low</option>
           <option value="medium">Medium</option>

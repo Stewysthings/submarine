@@ -116,7 +116,7 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
         </div>
       )}
 
-      <button type="submit" disabled={!title.trim()}>
+      <button type="submit" disabled={!text.trim()}>
         {initialTask ? 'Update Task' : 'Add Task'}
       </button>
     </form>
