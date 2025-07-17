@@ -34,9 +34,9 @@ const TaskInput: React.FC<TaskInputProps> = ({
           onChange={(e) => setInput(e.target.value)}
           placeholder="Add a task"
           onKeyDown={(e) => e.key === 'Enter' && addTask()}
-          className="flex-1 p-2 bg-gray-800 text-white border border-gray-600 rounded"
+          className="flex-1 p-2 bg-gray-800 border border-gray-600 rounded"
           aria-label="Task description"
-          style={{ color: 'white' }}
+          style={{ color: 'black' }}
         />
         
         <input
