@@ -20,6 +20,14 @@
   transform: translateY(-1px);
 }
 
+/* Ensure disabled add button maintains blue color but with visual indication it's disabled */
+.add-button:disabled {
+  background-color: #007bff;
+  color: white;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* Edit button styling */
 .edit-button {
   background-color: #28a745;
