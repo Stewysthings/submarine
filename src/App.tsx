@@ -85,7 +85,6 @@ function App() {
       : [[category, categorizedTasks[category] ?? []]]; // Use nullish coalescing for safety
   }, [category, categorizedTasks]);
 
-  console.log('App is rendering, number of tasks:', tasks.length); // Log rendering details
 
   return (
     <ErrorBoundary>
@@ -120,26 +119,26 @@ function App() {
             const task = tasks.find(t => t.id === id);
             startEdit(id, text, dueDate, priority, task?.allDay || false);
           }}
-          isOverdue={(dueDate?: string, completed?: boolean) => {
-            // For the TaskList, we need to find the task to get its allDay property
-            // This is a bit of a workaround - ideally we'd pass the whole task
-            return isOverdue(dueDate, completed || false);
+          isOverdue={(dueDate?: string, completed?: boolean, allDay?: boolean) => {
+            return isOverdue(dueDate, completed || false, allDay || false);
           }}
-          isDueSoon={(dueDate?: string) => {
-            // Similar workaround for isDueSoon
-            return isDueSoon(dueDate);
+          isDueSoon={(dueDate?: string, allDay?: boolean) => {
+            return isDueSoon(dueDate, allDay || false);
           }}
           categoryLabels={categoryLabels}
           editingId={editingState.id}
           editText={editingState.text}
           editDueDate={editingState.dueDate}
           editPriority={editingState.priority}
+          editAllDay={editingState.allDay || false}
           setEditText={(value: React.SetStateAction<string>) =>
             setEditingState({ ...editingState, text: typeof value === 'function' ? value(editingState.text) : value })}
           setEditDueDate={(value: React.SetStateAction<string>) =>
             setEditingState({ ...editingState, dueDate: typeof value === 'function' ? value(editingState.dueDate) : value })}
           setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) =>
             setEditingState({ ...editingState, priority: typeof value === 'function' ? value(editingState.priority) : value })}
+          setEditAllDay={(value: React.SetStateAction<boolean>) =>
+            setEditingState({ ...editingState, allDay: typeof value === 'function' ? value(editingState.allDay || false) : value })}
           saveEdit={saveEdit}
           cancelEdit={cancelEdit}
           activeCategory={category}

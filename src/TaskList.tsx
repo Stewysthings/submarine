@@ -29,9 +29,11 @@ const TaskList: React.FC<TaskListProps> = ({
   editText,
   editDueDate,
   editPriority,
+  editAllDay,
   setEditText,
   setEditDueDate,
   setEditPriority,
+  setEditAllDay,
   saveEdit,
   cancelEdit,
   activeCategory,
@@ -51,9 +53,9 @@ const TaskList: React.FC<TaskListProps> = ({
             <ul className="task-list">
               {tasks.map((task) => {
                 const statusClass = !task.completed
-                  ? isOverdue(task.dueDate, task.completed)
+                  ? isOverdue(task.dueDate, task.completed, task.allDay)
                     ? 'overdue'
-                    : isDueSoon(task.dueDate)
+                    : isDueSoon(task.dueDate, task.allDay)
                       ? 'due-soon'
                       : `priority-${task.priority}`
                   : 'completed';
@@ -61,7 +63,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   <li
                     key={task.id}
                     className={`task-item ${statusClass}`}
-                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate, task.completed) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
+                    aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate, task.completed, task.allDay) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate, task.allDay) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
                   >
                     <input
                       type="checkbox"
@@ -104,6 +106,20 @@ const TaskList: React.FC<TaskListProps> = ({
                           <option value="medium">Medium Priority</option>
                           <option value="high">High Priority</option>
                         </select>
+                        
+                        <div className="checkbox-container">
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={editAllDay}
+                              onChange={(e) => setEditAllDay(e.target.checked)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="edit-checkbox"
+                              aria-label="All day task"
+                            />
+                            All day task
+                          </label>
+                        </div>
                         <button
                           type="button"
                           onClick={() => saveEdit(task.id)}
@@ -125,7 +141,7 @@ const TaskList: React.FC<TaskListProps> = ({
                       <>
                         <span
                           className={`task-text ${statusClass}`}
-                          onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority)}
+                          onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay)}
                         >
                           {task.text} {task.dueDate && `(${formatDueDate(task.dueDate, task.allDay)})`}
                         </span>
@@ -134,7 +150,7 @@ const TaskList: React.FC<TaskListProps> = ({
                         </span>
                         <button
                           type="button"
-                          onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority)}
+                          onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay)}
                           className="edit-button"
                           aria-label={`Edit task ${task.text}`}
                         >

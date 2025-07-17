@@ -7,7 +7,7 @@ interface TaskFormProps {
 }
 
 export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
-  const [title, setTitle] = useState(initialTask?.title || '');
+  const [text, setText] = useState(initialTask?.text || '');
   const [description, setDescription] = useState(initialTask?.description || '');
   const [dueDate, setDueDate] = useState(
     initialTask?.dueDate ? initialTask.dueDate.split('T')[0] : ''
@@ -19,7 +19,6 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
   );
   const [allDay, setAllDay] = useState(initialTask?.allDay || false);
 
-  console.log('TaskForm render - dueDate:', dueDate, 'allDay:', allDay);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +37,7 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
     }
 
     onSubmit({
-      title,
+      text,
       description,
       dueDate: dueDateString || undefined,
       allDay,
@@ -46,7 +45,7 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
     });
 
     // Reset form
-    setTitle('');
+    setText('');
     setDescription('');
     setDueDate('');
     setDueTime('');
@@ -56,14 +55,14 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
   return (
     <form onSubmit={handleSubmit} className="task-form">
       <div className="form-group">
-        <label htmlFor="title">Task Title *</label>
+        <label htmlFor="text">Task Text *</label>
         <input
-          id="title"
+          id="text"
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           required
-          placeholder="Enter task title"
+          placeholder="Enter task text"
         />
       </div>
 
@@ -91,13 +90,11 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
       
             {dueDate && (
             <div className="form-group">
-                {console.log('Rendering checkbox section, dueDate:', dueDate)}
                 <label className="checkbox-label">
                 <input
                     type="checkbox"
                     checked={allDay}
                     onChange={(e) => {
-                    console.log('Checkbox changed:', e.target.checked);
                     setAllDay(e.target.checked);
                     }}
                 />

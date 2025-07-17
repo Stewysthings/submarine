@@ -83,7 +83,6 @@ const TaskInput: React.FC<TaskInputProps> = ({
               type="checkbox"
               checked={allDay}
               onChange={(e) => {
-                console.log('All day checkbox changed:', e.target.checked);
                 setAllDay(e.target.checked);
                 if (e.target.checked && dueDate) {
                   const dateOnly = dueDate.split('T')[0];

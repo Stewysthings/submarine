@@ -6,7 +6,6 @@ export function useTaskManager() {
     try {
       const saved = localStorage.getItem('tasks');
       const parsed = saved ? JSON.parse(saved) : [];
-      console.log('Loaded tasks:', parsed);
       return Array.isArray(parsed)
         ? parsed.map((t: any) => ({
             id: t.id || crypto.randomUUID(),
@@ -32,7 +31,6 @@ export function useTaskManager() {
   });
 
   useEffect(() => {
-    console.log('Saving tasks:', tasks);
     try {
       localStorage.setItem('tasks', JSON.stringify(tasks));
     } catch (error) {
@@ -56,12 +54,10 @@ export function useTaskManager() {
   };
 
   const deleteTask = (id: string) => {
-    console.log('Deleting task ID:', id);
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   const toggleTask = (id: string) => {
-    console.log('Toggling task ID:', id);
     setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
@@ -71,7 +67,6 @@ export function useTaskManager() {
 
   // Update startEdit to include allDay
   const startEdit = (id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high', allDay: boolean = false) => {
-    console.log('Editing task ID:', id);
     setEditingState({
       id,
       text,
@@ -86,7 +81,6 @@ export function useTaskManager() {
       cancelEdit();
       return;
     }
-    console.log('Saving edit for task ID:', editingState.id, editingState);
     setTasks(
       tasks.map((task) =>
         task.id === id
@@ -104,7 +98,6 @@ export function useTaskManager() {
   };
 
   const cancelEdit = () => {
-    console.log('Canceling edit');
     setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false });
   };
 
