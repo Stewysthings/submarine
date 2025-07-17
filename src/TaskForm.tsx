@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Task } from './types';
+import './ButtonStyles.css';
 
 interface TaskFormProps {
   onSubmit: (task: Omit<Task, 'id' | 'createdAt'>) => void;
@@ -116,7 +117,7 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
         </div>
       )}
 
-      <button type="submit" disabled={!text.trim()}>
+      <button type="submit" className="add-button" disabled={!text.trim()}>
         {initialTask ? 'Update Task' : 'Add Task'}
       </button>
     </form>
