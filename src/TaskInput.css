@@ -13,6 +13,12 @@ interface TaskInputProps {
   addTask: () => void;
 }
 
+.task-input-container input[type="date"]::placeholder,
+.task-input-container input[type="datetime-local"]::placeholder {
+    color: #9ca3af !important; /* Match .text-gray-400 */
+    opacity: 1;
+}
+
 const TaskInput: React.FC<TaskInputProps> = ({
   input,
   dueDate,
