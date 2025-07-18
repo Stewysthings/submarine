@@ -2,21 +2,20 @@
 export interface Task {
   id: string;
   text: string;
-  description?: string;  // Add this field
-  dueDate?: string;     // ISO string for date/time
-  allDay?: boolean;     // Flag to indicate if it's an all-day task
+  description?: string;
+  dueDate?: string;
+  allDay?: boolean;
   completed: boolean;
   priority: 'low' | 'medium' | 'high';
-  createdAt?: string;   // Optional since not all code uses it
+  createdAt?: string;
+  recurrence: 'none' | 'daily' | 'weekly' | 'monthly'; // New field
 }
 
 export interface EditingState {
   id: string | null;
   text: string;
-  description?: string;  // Add this field
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
   allDay: boolean;
+  recurrence: 'none' | 'daily' | 'weekly' | 'monthly'; // New field
 }
-export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
-
