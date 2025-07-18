@@ -1,132 +1,202 @@
-.task-input-container {
-  background: #1f2937;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #374151;
-  margin-bottom: 1rem;
+import React from 'react';
+import './TaskInput.css';
+
+interface TaskInputProps {
+  input: string;
+  dueDate: string;
+  priority: 'low' | 'medium' | 'high';
+  allDay: boolean;
+  setInput: (value: string) => void;
+  setDueDate: (value: string) => void;
+  setPriority: (value: 'low' | 'medium' | 'high') => void;
+  setAllDay: (value: boolean) => void;
+  addTask: () => void;
 }
 
-.task-input-container .flex {
-  display: flex;
-  align-items: center;
-}
+const TaskInput: React.FC<TaskInputProps> = ({
+  input,
+  dueDate,
+  priority,
+  allDay,
+  setInput,
+  setDueDate,
+  setPriority,
+  setAllDay,
+  addTask,
+}) => {
+    // Helper to format dueDate for display
+    const formatDisplayDate = (date: string, allDay: boolean) => {
+      if (!date) return '';
+      try {
+        return allDay
+        ? date.split('T')[0]
+      : new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      } catch {
+          return 'Invalid date';
+        }
+    };
 
-.task-input-container input[type="checkbox"] {
-  accent-color: #06b6d4;
-  width: 16px;
-  height: 16px;
-}
+      return (
+      <div className="task-input-container">
+    {/* Main input row */}
+    <div className="flex space-x-2 mb-2">
+    <input
+    type="text"
+    value={input}
+      onChange={(e) => setInput(e.target.value)}
+      placeholder="Add a task"
+      onKeyDown={(e) => e.key === 'Enter' && addTask()}
+      className="flex-1 p-2 bg-gray-800 border border-gray-600 rounded"
+      aria-label="Task description"
+      style={{ color: 'black' }}
+    />
 
-/* Fix the checkbox label text color and spacing */
-.task-input-container label {
-  user-select: none;
-  color: #ffffff !important;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-right: 2rem;
-}
+    <div className="flex items-center space-x-2">
+    <input
+    key={allDay ? 'date' : 'datetime-local'} // Force re-render on type change
+    type={allDay ? 'date' : 'datetime-local'}
+      value={
+      dueDate && !isNaN(new Date(dueDate).getTime())
+    ? allDay
+    ? dueDate.split('T')[0]
+    : dueDate.slice(0, 16)
+    : ''
+    } // Validate and format
+    onChange={(e) => {
+      console.log('Date input changed:', e.target.value, 'allDay:', allDay); // Debug
+    if (allDay) {
+    setDueDate(e.target.value ? `${e.target.value}T23:59:59` : '');
+    } else {
+      setDueDate(e.target.value);
+      }
+    }}
+      className="p-2 bg-gray-800 text-white border border-gray-600 rounded min-w-[180px]"
+      aria-label="Task due date"
+      placeholder={allDay ? 'Select date' : 'Select date & time'}
+      style={{ color: 'white', opacity: 1, '::placeholder': { color: '#9ca3af' } }}
+    />
+    {dueDate && (
+    <span className="text-gray-400 text-sm">
+    {formatDisplayDate(dueDate, allDay)}
+    </span>
+    )}
+    </div>
 
-.task-input-container label span {
-  color: #ffffff !important;
-  font-size: 0.875rem;
-}
+    <select
+    value={priority}
+      onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+      className="p-2 bg-gray-800 text-white border border-gray-600 rounded"
+      aria-label="Task priority"
+      style={{ color: 'white' }}
+    >
+    <option value="low">Low</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+    </select>
 
-/* Make sure the date input is wide enough */
-.task-input-container input[type="date"],
-.task-input-container input[type="datetime-local"] {
-  min-width: 180px;
-}
+    <button
+    type="button"
+    onClick={addTask}
+      className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 whitespace-nowrap font-semibold"
+      disabled={!input.trim()}
+    >
+    Add Task
+    </button>
+    </div>
 
-/* Fix spacing between quick action buttons */
-.task-input-container .flex.items-center.justify-between {
-  margin-top: 0.75rem;
-}
+    {/* Date options row */}
+    <div className="flex items-center justify-between">
+    <div className="flex items-center">
+    {/* All Day checkbox */}
+    <label className="flex items-center cursor-pointer text-white">
+    <input
+    type="checkbox"
+    checked={allDay}
+      onChange={(e) => {
+      const isAllDay = e.target.checked;
+      console.log('All day toggled:', isAllDay, 'dueDate:', dueDate); // Debug
+    setAllDay(isAllDay);
+      if (isAllDay && dueDate) {
+      const dateOnly = dueDate.split('T')[0];
+    setDueDate(`${dateOnly}T23:59:59`);
+    } else if (!isAllDay && dueDate) {
+      const dateOnly = dueDate.split('T')[0];
+      const now = new Date();
+      const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    setDueDate(`${dateOnly}T${time}`);
+    }
+    }}
+      className="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500"
+      />
+      <span className="text-white ml-2">All day task</span>
+      </label>
 
-/* Style the main Add Task button with better contrast */
-.task-input-container .bg-cyan-500 {
-  background-color: #06b6d4 !important;
-  color: #ffffff !important;
-  font-weight: 600;
-  border: 1px solid #0891b2;
-}
+    {/* Show current date/time info */}
+    {dueDate && (
+    <span className="text-gray-400 ml-4 text-sm">
+    {allDay ? 'Due end of day' : 'Specific time'}
+    </span>
+    )}
+    </div>
 
-.task-input-container .bg-cyan-500:hover {
-  background-color: #0891b2 !important;
-  color: #ffffff !important;
-}
+    {/* Quick date buttons with better spacing */}
+    <div className="flex space-x-4">
+    <button
+    type="button"
+    onClick={() => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      const todayEndOfDay = `${year}-${month}-${day}T23:59:59`;
+    setDueDate(todayEndOfDay);
+    setAllDay(true);
+      console.log('Today set:', todayEndOfDay); // Debug
+    }}
+      className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium"
+      >
+      Today
+      </button>
+      <button
+      type="button"
+      onClick={() => {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const year = tomorrow.getFullYear();
+      const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const day = String(tomorrow.getDate()).padStart(2, '0');
+      const tomorrowEndOfDay = `${year}-${month}-${day}T23:59:59`;
+    setDueDate(tomorrowEndOfDay);
+    setAllDay(true);
+      console.log('Tomorrow set:', tomorrowEndOfDay); // Debug
+    }}
+      className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium"
+      >
+      Tomorrow
+      </button>
+    {dueDate && (
+    <button
+    type="button"
+    onClick={() => {
+    setDueDate('');
+    setAllDay(false);
+      console.log('Date cleared'); // Debug
+    }}
+      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 font-medium"
+      >
+      Clear
+      </button>
+    )}
+    </div>
+    </div>
+    </div>
+    );
+    };
 
-.task-input-container .bg-cyan-500:disabled {
-  background-color: #374151 !important;
-  color: #9ca3af !important;
-  cursor: not-allowed;
-  border: 1px solid #4b5563;
-}
-
-/* Style the quick action buttons with better contrast and spacing */
-.task-input-container .flex.space-x-3:last-child {
-  gap: 1rem; /* More space between buttons */
-}
-
-.task-input-container .bg-gray-700 {
-  background-color: #374151 !important;
-  color: #ffffff !important;
-  font-weight: 500;
-  border: 1px solid #4b5563;
-  padding: 0.5rem 1rem !important;
-  font-size: 0.875rem !important;
-  white-space: nowrap;
-  min-width: 70px;
-}
-
-.task-input-container .bg-gray-700:hover {
-  background-color: #4b5563 !important;
-  color: #ffffff !important;
-  border: 1px solid #6b7280;
-}
-
-/* Style the Clear button */
-.task-input-container .bg-red-600 {
-  background-color: #dc2626 !important;
-  color: #ffffff !important;
-  font-weight: 500;
-  border: 1px solid #b91c1c;
-  padding: 0.5rem 1rem !important;
-  font-size: 0.875rem !important;
-  white-space: nowrap;
-  min-width: 70px;
-}
-
-.task-input-container .bg-red-600:hover {
-  background-color: #b91c1c !important;
-  color: #ffffff !important;
-  border: 1px solid #991b1b;
-}
-
-/* Style the status text */
-.task-input-container .text-gray-400 {
-  color: #9ca3af !important;
-  font-style: italic;
-  margin-left: 1rem;
-}
-
-/* Style the main input row */
-.task-input-container .flex.space-x-2.mb-2 {
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Make sure all text in the container is visible */
-.task-input-container .text-white {
-  color: #ffffff !important;
-}
-
-/* Override any conflicting button styles */
-.task-input-container button {
-  transition: all 0.2s ease-in-out;
-}
-
-.task-input-container button:focus {
-  outline: 2px solid #06b6d4;
-  outline-offset: 2px;
-}
+export default TaskInput;
