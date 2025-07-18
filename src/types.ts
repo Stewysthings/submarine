@@ -18,3 +18,5 @@ export interface EditingState {
   priority: 'low' | 'medium' | 'high';
   allDay: boolean;
 }
+export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
+
