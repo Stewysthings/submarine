@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Task } from './types';
 import './ButtonStyles.css';
 
@@ -11,15 +11,21 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
   const [text, setText] = useState(initialTask?.text || '');
   const [description, setDescription] = useState(initialTask?.description || '');
   const [dueDate, setDueDate] = useState(
-    initialTask?.dueDate ? initialTask.dueDate.split('T')[0] : ''
+      initialTask?.dueDate
+          ? new Date(initialTask.dueDate).toISOString().split('T')[0]
+          : ''
   );
   const [dueTime, setDueTime] = useState(
     initialTask?.dueDate && !initialTask.allDay 
       ? initialTask.dueDate.split('T')[1]?.slice(0, 5) || ''
       : ''
   );
-  const [allDay, setAllDay] = useState(initialTask?.allDay || false);
 
+  useEffect(() => {
+    console.log('Current dueDate:', dueDate);
+  }, [dueDate]);
+  
+  const [allDay, setAllDay] = useState(initialTask?.allDay || false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
