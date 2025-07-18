@@ -1,3 +1,4 @@
+
 .task-input-container {
     background: #1f2937; /* bg-gray-800 */
     padding: 1rem;
@@ -32,7 +33,7 @@
     font-size: 0.875rem;
 }
 
-/* Style the priority select */
+/* Style the priority and recurrence select */
 .task-input-container select {
     min-width: 100px;
     background-color: #1f2937 !important; /* bg-gray-800 */
@@ -61,8 +62,9 @@
     padding: 0.5rem;
 }
 
-/* Style the priority label */
-.task-input-container label[for="task-priority"] {
+/* Style the priority and recurrence labels */
+.task-input-container label[for="task-priority"],
+.task-input-container label[for="task-recurrence"] {
     font-size: 0.875rem;
     color: #ffffff !important;
     margin-right: 0.5rem;
