@@ -1,5 +1,7 @@
+
+import React from 'react';
 import type { Task } from './types';
-import type { TaskListProps } from './TaskListProps'; // Import instead of defining inline
+import type { TaskListProps } from './TaskListProps';
 
 function formatDueDate(dueDate?: string, allDay?: boolean): string {
   if (!dueDate) return '';
@@ -30,16 +32,17 @@ const TaskList: React.FC<TaskListProps> = ({
   editDueDate,
   editPriority,
   editAllDay,
+  editRecurrence, // New prop
   setEditText,
   setEditDueDate,
   setEditPriority,
   setEditAllDay,
+  setEditRecurrence, // New prop
   saveEdit,
   cancelEdit,
   activeCategory,
   onCategoryChange,
 }) => {
-  // Type guard to handle undefined or invalid displayedTasks
   if (!displayedTasks || !Array.isArray(displayedTasks)) {
     return <p className="no-tasks">No tasks available</p>;
   }
@@ -88,9 +91,22 @@ const TaskList: React.FC<TaskListProps> = ({
                           aria-label="Edit task description"
                         />
                         <input
-                          type="datetime-local"
-                          value={editDueDate}
-                          onChange={(e) => setEditDueDate(e.target.value)}
+                          type={editAllDay ? 'date' : 'datetime-local'} // Adjust for allDay
+                          value={
+                            editDueDate && !isNaN(new Date(editDueDate).getTime())
+                              ? editAllDay
+                                ? editDueDate.split('T')[0]
+                                : editDueDate.slice(0, 16)
+                              : ''
+                          }
+                          onChange={(e) => {
+                            console.log('Edit due date changed:', e.target.value);
+                            if (editAllDay) {
+                              setEditDueDate(e.target.value ? `${e.target.value}T23:59:59` : '');
+                            } else {
+                              setEditDueDate(e.target.value);
+                            }
+                          }}
                           onClick={(e) => e.stopPropagation()}
                           className="date-picker"
                           aria-label="Edit due date"
@@ -102,17 +118,44 @@ const TaskList: React.FC<TaskListProps> = ({
                           className="priority-selector"
                           aria-label="Edit priority"
                         >
-                          <option value="low">Low Priority</option>
-                          <option value="medium">Medium Priority</option>
-                          <option value="high">High Priority</option>
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
                         </select>
-                        
+                        <select
+                          value={editRecurrence}
+                          onChange={(e) => {
+                            console.log('Edit recurrence changed:', e.target.value);
+                            setEditRecurrence(e.target.value as 'none' | 'daily' | 'weekly' | 'monthly');
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="recurrence-selector"
+                          aria-label="Edit recurrence"
+                        >
+                          <option value="none">None</option>
+                          <option value="daily">Daily</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="monthly">Monthly</option>
+                        </select>
                         <div className="checkbox-container">
                           <label className="checkbox-label">
                             <input
                               type="checkbox"
                               checked={editAllDay}
-                              onChange={(e) => setEditAllDay(e.target.checked)}
+                              onChange={(e) => {
+                                const isAllDay = e.target.checked;
+                                console.log('Edit all day toggled:', isAllDay);
+                                setEditAllDay(isAllDay);
+                                if (isAllDay && editDueDate) {
+                                  const dateOnly = editDueDate.split('T')[0];
+                                  setEditDueDate(`${dateOnly}T23:59:59`);
+                                } else if (!isAllDay && editDueDate) {
+                                  const dateOnly = editDueDate.split('T')[0];
+                                  const now = new Date();
+                                  const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                                  setEditDueDate(`${dateOnly}T${time}`);
+                                }
+                              }}
                               onClick={(e) => e.stopPropagation()}
                               className="edit-checkbox"
                               aria-label="All day task"
@@ -141,16 +184,21 @@ const TaskList: React.FC<TaskListProps> = ({
                       <>
                         <span
                           className={`task-text ${statusClass}`}
-                          onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay)}
+                          onDoubleClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay, task.recurrence)}
                         >
                           {task.text} {task.dueDate && `(${formatDueDate(task.dueDate, task.allDay)})`}
                         </span>
                         <span className={`priority-label ${task.priority ? task.priority.toLowerCase() : 'low'}`}>
-                          {task.priority || 'Low'}
+                          {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                         </span>
+                        {task.recurrence !== 'none' && (
+                          <span className="recurrence-label text-gray-400">
+                            Repeats: {task.recurrence.charAt(0).toUpperCase() + task.recurrence.slice(1)}
+                          </span>
+                        )}
                         <button
                           type="button"
-                          onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay)}
+                          onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay, task.recurrence)}
                           className="edit-button"
                           aria-label={`Edit task ${task.text}`}
                         >
