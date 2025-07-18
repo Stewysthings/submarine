@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import type { Task, EditingState } from '../types';
 
@@ -13,7 +14,8 @@ export function useTaskManager() {
             dueDate: t.dueDate || undefined,
             completed: t.completed || false,
             priority: t.priority || 'low',
-            allDay: t.allDay || false, // Add this
+            allDay: t.allDay || false,
+            recurrence: t.recurrence || 'none', // Add recurrence
           })).filter((t: Task) => t.id && t.text)
         : [];
     } catch (error) {
@@ -27,7 +29,8 @@ export function useTaskManager() {
     text: '',
     dueDate: '',
     priority: 'low',
-    allDay: false, // Add this
+    allDay: false,
+    recurrence: 'none', // Add recurrence
   });
 
   useEffect(() => {
@@ -38,8 +41,13 @@ export function useTaskManager() {
     }
   }, [tasks]);
 
-  // Update addTask to accept allDay parameter
-  const addTask = (text: string, dueDate: string, priority: 'low' | 'medium' | 'high', allDay: boolean = false) => {
+  const addTask = (
+    text: string,
+    dueDate: string,
+    priority: 'low' | 'medium' | 'high',
+    allDay: boolean = false,
+    recurrence: 'none' | 'daily' | 'weekly' | 'monthly' = 'none'
+  ) => {
     if (!text.trim()) return;
     
     const newTask: Task = {
@@ -49,6 +57,7 @@ export function useTaskManager() {
       completed: false,
       priority: priority || 'low',
       allDay: allDay,
+      recurrence: recurrence,
     };
     setTasks([...tasks, newTask]);
   };
@@ -65,14 +74,21 @@ export function useTaskManager() {
     );
   };
 
-  // Update startEdit to include allDay
-  const startEdit = (id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high', allDay: boolean = false) => {
+  const startEdit = (
+    id: string,
+    text: string,
+    dueDate: string | undefined,
+    priority: 'low' | 'medium' | 'high',
+    allDay: boolean = false,
+    recurrence: 'none' | 'daily' | 'weekly' | 'monthly' = 'none'
+  ) => {
     setEditingState({
       id,
       text,
       dueDate: dueDate || '',
       priority: priority || 'low',
       allDay: allDay,
+      recurrence: recurrence,
     });
   };
 
@@ -90,15 +106,16 @@ export function useTaskManager() {
               dueDate: editingState.dueDate,
               priority: editingState.priority || 'low',
               allDay: editingState.allDay || false,
+              recurrence: editingState.recurrence || 'none',
             }
           : task
       )
     );
-    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false });
+    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false, recurrence: 'none' });
   };
 
   const cancelEdit = () => {
-    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false });
+    setEditingState({ id: null, text: '', dueDate: '', priority: 'low', allDay: false, recurrence: 'none' });
   };
 
   return {
@@ -114,3 +131,4 @@ export function useTaskManager() {
     cancelEdit,
   };
 }
+
