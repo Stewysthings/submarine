@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import type { Task } from './types';
+import { FormInput } from './FormInput';
+import { useTaskFormState } from './useTaskFormState';
 import './ButtonStyles.css';
 
 interface TaskFormProps {
@@ -7,41 +10,25 @@ interface TaskFormProps {
   initialTask?: Partial<Task>;
 }
 
-export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
-  const [text, setText] = useState(initialTask?.text || '');
-  const [description, setDescription] = useState(initialTask?.description || '');
-  const [dueDate, setDueDate] = useState(
-      initialTask?.dueDate
-          ? new Date(initialTask.dueDate).toISOString().split('T')[0]
-          : ''
-  );
-  const [dueTime, setDueTime] = useState(
-    initialTask?.dueDate && !initialTask.allDay 
-      ? initialTask.dueDate.split('T')[1]?.slice(0, 5) || ''
-      : ''
-  );
+const DEFAULT_MORNING_TIME = '09:00:00';
+const DEFAULT_NOON_TIME = '12:00:00';
 
-  useEffect(() => {
-    console.log('Current dueDate:', dueDate);
-  }, [dueDate]);
-  
-  const [allDay, setAllDay] = useState(initialTask?.allDay || false);
-  
+export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
+  const { formState, updateField, resetForm } = useTaskFormState(initialTask);
+  const { text, description, dueDate, dueTime, allDay } = formState;
+
+  const createDueDateString = (date: string, time: string, isAllDay: boolean): string => {
+    if (!date) return '';
+
+    if (isAllDay) {
+      return `${date}T${DEFAULT_NOON_TIME}`;
+    }
+    return `${date}T${time ? `${time}:00` : DEFAULT_MORNING_TIME}`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    let dueDateString = '';
-    if (dueDate) {
-      if (allDay) {
-        // For all-day tasks, set to noon to avoid timezone issues
-        dueDateString = `${dueDate}T12:00:00`;
-      } else if (dueTime) {
-        dueDateString = `${dueDate}T${dueTime}:00`;
-      } else {
-        // If no time specified but not all-day, default to 9 AM
-        dueDateString = `${dueDate}T09:00:00`;
-      }
-    }
+    const dueDateString = createDueDateString(dueDate, dueTime, allDay);
 
     onSubmit({
       text,
@@ -49,83 +36,69 @@ export function TaskForm({ onSubmit, initialTask }: TaskFormProps) {
       dueDate: dueDateString || undefined,
       allDay,
       completed: initialTask?.completed || false,
+      priority: initialTask?.priority || 'low', // Add default priority
     });
 
-    // Reset form
-    setText('');
-    setDescription('');
-    setDueDate('');
-    setDueTime('');
-    setAllDay(false);
+    resetForm();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="task-form">
-      <div className="form-group">
-        <label htmlFor="text">Task Text *</label>
-        <input
-          id="text"
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          required
-          placeholder="Enter task text"
+      <form onSubmit={handleSubmit} className="task-form">
+        <FormInput
+            label="Task Text *"
+            id="text"
+            type="text"
+            value={text}
+            onChange={updateField('text')}
+            required
+            placeholder="Enter task text"
         />
-      </div>
 
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter task description (optional)"
-          rows={3}
+        <FormInput
+            label="Description"
+            id="description"
+            type="textarea"
+            value={description}
+            onChange={updateField('description')}
+            placeholder="Enter task description (optional)"
+            rows={3}
         />
-      </div>
 
-      <div className="form-group">
-        <label htmlFor="dueDate">Due Date</label>
-        <input
-          id="dueDate"
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+        <FormInput
+            label="Due Date"
+            id="dueDate"
+            type="date"
+            value={dueDate}
+            onChange={updateField('dueDate')}
         />
-      </div>
 
-      
-            {dueDate && (
+        {dueDate && (
             <div className="form-group">
-                <label className="checkbox-label">
+              <label className="checkbox-label">
                 <input
                     type="checkbox"
                     checked={allDay}
-                    onChange={(e) => {
-                    setAllDay(e.target.checked);
-                    }}
+                    onChange={(e) => updateField('allDay')(e.target.checked)}
                 />
                 All day task
-                </label>
+              </label>
             </div>
-            )}
+        )}
 
-      {dueDate && !allDay && (
-        <div className="form-group">
-          <label htmlFor="dueTime">Due Time</label>
-          <input
-            id="dueTime"
-            type="time"
-            value={dueTime}
-            onChange={(e) => setDueTime(e.target.value)}
-            placeholder="Optional"
-          />
-        </div>
-      )}
+        {dueDate && !allDay && (
+            <FormInput
+                label="Due Time"
+                id="dueTime"
+                type="time"
+                value={dueTime}
+                onChange={updateField('dueTime')}
+                placeholder="Optional"
+            />
+        )}
 
-      <button type="submit" className="add-button" disabled={!text.trim()}>
-        {initialTask ? 'Update Task' : 'Add Task'}
-      </button>
-    </form>
+        <button type="submit" className="add-button" disabled={!text.trim()}>
+          {initialTask ? 'Update Task' : 'Add Task'}
+        </button>
+      </form>
   );
 }

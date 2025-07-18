@@ -1,19 +1,20 @@
+
 export interface Task {
   id: string;
-  text: string; // Your code uses 'text', not 'title'
-  dueDate?: string; // ISO string for date/time
-  allDay?: boolean; // Flag to indicate if it's an all-day task
+  text: string;
+  description?: string;  // Add this field
+  dueDate?: string;     // ISO string for date/time
+  allDay?: boolean;     // Flag to indicate if it's an all-day task
   completed: boolean;
-  priority: 'low' | 'medium' | 'high'; // Your code uses priority
-  createdAt?: string; // Optional since your current code doesn't use it
+  priority: 'low' | 'medium' | 'high';
+  createdAt?: string;   // Optional since not all code uses it
 }
 
 export interface EditingState {
   id: string | null;
   text: string;
+  description?: string;  // Add this field
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
-  allDay?: boolean; // Add this for editing
+  allDay: boolean;
 }
-
-export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
