@@ -1,26 +1,35 @@
-import type { Dispatch, SetStateAction } from 'react';
-import type { Task, TaskCategory } from './types';
+
+import type { Task } from './types';
 
 export interface TaskListProps {
-  displayedTasks: [string, Task[]][];
+  displayedTasks: [string, Task[]][] | undefined;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
-  startEdit: (id: string, text: string, dueDate: string, priority: 'low' | 'medium' | 'high', allDay?: boolean) => void;
-  isOverdue: (dueDate?: string, completed?: boolean, allDay?: boolean) => boolean;
-  isDueSoon: (dueDate?: string, allDay?: boolean) => boolean;
-  categoryLabels: Record<string, string>;
+  startEdit: (
+    id: string,
+    text: string,
+    dueDate: string | undefined,
+    priority: 'low' | 'medium' | 'high',
+    allDay: boolean,
+    recurrence: 'none' | 'daily' | 'weekly' | 'monthly'
+  ) => void;
+  isOverdue: (dueDate: string | undefined, completed: boolean, allDay?: boolean) => boolean;
+  isDueSoon: (dueDate: string | undefined, allDay?: boolean) => boolean;
+  categoryLabels: { [key: string]: string };
   editingId: string | null;
   editText: string;
   editDueDate: string;
   editPriority: 'low' | 'medium' | 'high';
   editAllDay: boolean;
-  setEditText: Dispatch<SetStateAction<string>>;
-  setEditDueDate: Dispatch<SetStateAction<string>>;
-  setEditPriority: Dispatch<SetStateAction<'low' | 'medium' | 'high'>>;
-  setEditAllDay: Dispatch<SetStateAction<boolean>>;
+  editRecurrence: 'none' | 'daily' | 'weekly' | 'monthly';
+  setEditText: (value: string) => void;
+  setEditDueDate: (value: string) => void;
+  setEditPriority: (value: 'low' | 'medium' | 'high') => void;
+  setEditAllDay: (value: boolean) => void;
+  setEditRecurrence: (value: 'none' | 'daily' | 'weekly' | 'monthly') => void;
   saveEdit: (id: string) => void;
   cancelEdit: () => void;
-  activeCategory: TaskCategory;
-  onCategoryChange: Dispatch<SetStateAction<TaskCategory>>;
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
 }
 
