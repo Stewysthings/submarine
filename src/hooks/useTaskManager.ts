@@ -1,6 +1,8 @@
 
+```typescript
 import { useState, useEffect } from 'react';
 import type { Task, EditingState } from '../types';
+import { getNextDueDate } from './utils';
 
 export function useTaskManager() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -15,7 +17,7 @@ export function useTaskManager() {
             completed: t.completed || false,
             priority: t.priority || 'low',
             allDay: t.allDay || false,
-            recurrence: t.recurrence || 'none', // Add recurrence
+            recurrence: t.recurrence || 'none',
           })).filter((t: Task) => t.id && t.text)
         : [];
     } catch (error) {
@@ -30,7 +32,7 @@ export function useTaskManager() {
     dueDate: '',
     priority: 'low',
     allDay: false,
-    recurrence: 'none', // Add recurrence
+    recurrence: 'none',
   });
 
   useEffect(() => {
@@ -67,10 +69,23 @@ export function useTaskManager() {
   };
 
   const toggleTask = (id: string) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === id) {
+          const updatedTask = { ...task, completed: !task.completed };
+          if (task.recurrence !== 'none' && !task.completed && task.dueDate) {
+            const newTask: Task = {
+              ...task,
+              id: crypto.randomUUID(),
+              dueDate: getNextDueDate(task.dueDate, task.recurrence, task.allDay),
+              completed: false,
+            };
+            return [updatedTask, newTask];
+          }
+          return updatedTask;
+        }
+        return task;
+      }).flat()
     );
   };
 
@@ -131,4 +146,4 @@ export function useTaskManager() {
     cancelEdit,
   };
 }
-
+```
