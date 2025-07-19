@@ -1,152 +1,163 @@
-// Import React hooks and components for the app
-import { useState, useMemo } from 'react';
-import './AppLayout.css'; // Import layout styles
-import './ButtonStyles.css'; // Import button styles
-import './TaskStyles.css'; // Import task-related styles
-import './FormStyles.css'; // Import form and input styles
-import TaskInput from './TaskInput'; // Input component for adding tasks
-import TaskList from './TaskList'; // Component to display tasks
-import FilterButtons from './FilterButtons'; // Filter buttons component
-import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils'; // Utility functions
-import { useTaskManager } from './hooks/useTaskManager'; // Custom task management hook
-import React from 'react'; // React library
-import type { Task, TaskCategory } from './types';
 
-/* ErrorBoundary class to catch and display JavaScript errors gracefully */
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: string | null }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { error: null }; // Initialize error state
-  }
+import React from 'react';
+import './TaskInput.css';
 
-  componentDidCatch(error: Error) {
-    this.setState({ error: error.message }); // Update state with error message
-  }
-
-  render() {
-    if (this.state.error) return <div className="error">Error: {this.state.error}</div>; // Show error if present
-    return this.props.children; // Render children if no error
-  }
+interface TaskInputProps {
+  input: string;
+  dueDate: string;
+  priority: 'low' | 'medium' | 'high';
+  allDay: boolean;
+  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
+  setInput: (value: string) => void;
+  setDueDate: (value: string) => void;
+  setPriority: (value: 'low' | 'medium' | 'high') => void;
+  setAllDay: (value: boolean) => void;
+  setRecurrence: (value: 'none' | 'daily' | 'weekly' | 'monthly') => void;
+  addTask: () => void;
 }
 
-function App() {
-  const {
-    tasks,
-    editingState,
-    setEditingState,
-    addTask,
-    deleteTask,
-    toggleTask,
-    startEdit,
-    saveEdit,
-    cancelEdit,
-  } = useTaskManager(); // Destructure task management functions and state
-
-  const [category, setCategory] = useState<TaskCategory>('all'); // State to manage active filter category
-  const [input, setInput] = useState(''); // State for task input text
-  const [dueDate, setDueDate] = useState(''); // State for task due date
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low'); // State for task priority
-  const [allDay, setAllDay] = useState(false); // Add this new state for all-day tasks
-
-  // Memoize task categorization to improve performance
-  const categorizedTasks = useMemo(() => {
-    const categories: Record<string, Task[]> = {
-      completed: [],
-      overdue: [],
-      dueSoon: [],
-      today: [],
-      thisweek: [],
-      thismonth: [],
-      someday: [],
-    };
-
-    tasks.forEach((task) => {
-      if (task.completed) {
-        categories.completed.push(task); // Categorize completed tasks
-      } else if (isOverdue(task.dueDate, task.completed, task.allDay)) { // Pass allDay parameter
-        categories.overdue.push(task); // Categorize overdue tasks
-      } else if (isDueSoon(task.dueDate, task.allDay)) { // Pass allDay parameter
-        categories.dueSoon.push(task); // Categorize due soon tasks
-      } else {
-        const cat = categorizeTask(task);
-        categories[cat].push(task); // Categorize other tasks
-      }
-    });
-
-    return categories;
-  }, [tasks]);
-
-  // Memoize displayed tasks with a default value
-  const displayedTasks: [string, Task[]][] = useMemo(() => {
-    if (!categorizedTasks) return []; // Default to empty array if categorizedTasks is undefined
-    const nonEmptyCategories = Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0);
-    return category === 'all'
-      ? nonEmptyCategories
-      : [[category, categorizedTasks[category] ?? []]]; // Use nullish coalescing for safety
-  }, [category, categorizedTasks]);
-
+export default function TaskInput({
+  input,
+  dueDate,
+  priority,
+  allDay,
+  recurrence,
+  setInput,
+  setDueDate,
+  setPriority,
+  setAllDay,
+  setRecurrence,
+  addTask,
+}: TaskInputProps) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addTask();
+  };
 
   return (
-    <ErrorBoundary>
-      <div className="app">
-        <h1>To-Do List</h1>
-        <p className="submarine-message">Submarine is surfacing…</p>
-        <TaskInput
-          input={input}
-          dueDate={dueDate}
-          priority={priority}
-          allDay={allDay} // Add this prop
-          setInput={setInput}
-          setDueDate={setDueDate}
-          setPriority={setPriority}
-          setAllDay={setAllDay} // Add this prop
-          addTask={() => {
-            addTask(input, dueDate, priority, allDay); // Pass allDay parameter
-            setInput('');
-            setDueDate('');
-            setPriority('low');
-            setAllDay(false); // Reset allDay state
-            setCategory('all'); // Reset to show all tasks after adding
-          }}
-        />
-        <FilterButtons category={category} onCategoryChange={setCategory} />
-        <TaskList
-          displayedTasks={displayedTasks}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-          startEdit={(id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high') => {
-            // Find the task to get its allDay property
-            const task = tasks.find(t => t.id === id);
-            startEdit(id, text, dueDate, priority, task?.allDay || false);
-          }}
-          isOverdue={(dueDate?: string, completed?: boolean, allDay?: boolean) => {
-            return isOverdue(dueDate, completed || false, allDay || false);
-          }}
-          isDueSoon={(dueDate?: string, allDay?: boolean) => {
-            return isDueSoon(dueDate, allDay || false);
-          }}
-          categoryLabels={categoryLabels}
-          editingId={editingState.id}
-          editText={editingState.text}
-          editDueDate={editingState.dueDate}
-          editPriority={editingState.priority}
-          editAllDay={editingState.allDay || false}
-          setEditText={(value: React.SetStateAction<string>) =>
-            setEditingState({ ...editingState, text: typeof value === 'function' ? value(editingState.text) : value })}
-          setEditDueDate={(value: React.SetStateAction<string>) =>
-            setEditingState({ ...editingState, dueDate: typeof value === 'function' ? value(editingState.dueDate) : value })}
-          setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) =>
-            setEditingState({ ...editingState, priority: typeof value === 'function' ? value(editingState.priority) : value })}
-          setEditAllDay={(value: React.SetStateAction<boolean>) =>
-            setEditingState({ ...editingState, allDay: typeof value === 'function' ? value(editingState.allDay || false) : value })}
-          saveEdit={saveEdit}
-          cancelEdit={cancelEdit}
-          activeCategory={category}
-          onCategoryChange={setCategory}
+    <form onSubmit={handleSubmit} className="task-input-form">
+      <div className="form-group">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Add a new task..."
+          className="task-input"
+          aria-label="Task input"
         />
       </div>
-    </ErrorBoundary>
+
+      <div className="form-group">
+        <label htmlFor="dueDate">Due Date</label>
+        <div className="flex items-center gap-2">
+          <input
+            id="dueDate"
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="date-picker"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const today = new Date();
+              setDueDate(today.toISOString().split('T')[0]);
+              setAllDay(true);
+            }}
+            className="form-button"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              setDueDate(tomorrow.toISOString().split('T')[0]);
+              setAllDay(true);
+            }}
+            className="form-button"
+          >
+            Tomorrow
+          </button>
+          {dueDate && (
+            <button
+              type="button"
+              onClick={() => {
+                setDueDate('');
+                setAllDay(false);
+              }}
+              className="form-button clear-button"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {dueDate && (
+        <div className="form-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={allDay}
+              onChange={(e) => setAllDay(e.target.checked)}
+            />
+            All day task
+          </label>
+        </div>
+      )}
+
+      {dueDate && !allDay && (
+        <div className="form-group">
+          <label htmlFor="dueTime">Due Time</label>
+          <input
+            id="dueTime"
+            type="time"
+            value={dueDate.split('T')[1]?.slice(0, 5) || ''}
+            onChange={(e) => {
+              const time = e.target.value;
+              setDueDate(time ? `${dueDate.split('T')[0]}T${time}` : dueDate);
+            }}
+            className="date-picker"
+          />
+        </div>
+      )}
+
+      <div className="form-group">
+        <label htmlFor="priority">Priority</label>
+        <select
+          id="priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+          className="priority-selector"
+          aria-label="Task priority"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="recurrence">Recurrence</label>
+        <select
+          id="recurrence"
+          value={recurrence}
+          onChange={(e) => setRecurrence(e.target.value as 'none' | 'daily' | 'weekly' | 'monthly')}
+          className="recurrence-selector"
+          aria-label="Task recurrence"
+        >
+          <option value="none">None</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      <button type="submit" disabled={!input.trim()} className="add-button">
+        Add Task
+      </button>
+    </form>
   );
 }
-
-export default App;
