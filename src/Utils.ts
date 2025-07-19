@@ -1,3 +1,4 @@
+
 import type { Task } from './types';
 
 export function isOverdue(dueDate?: string, completed: boolean = false, allDay: boolean = false): boolean {
@@ -34,6 +35,21 @@ export function isDueSoon(dueDate?: string, allDay: boolean = false): boolean {
   
   const diff = due.getTime() - now.getTime();
   return diff >= 0 && diff <= 24 * 60 * 60 * 1000;
+}
+
+export function getNextDueDate(dueDate: string, recurrence: 'daily' | 'weekly' | 'monthly', allDay: boolean = false): string {
+  const date = new Date(dueDate);
+  if (recurrence === 'daily') {
+    date.setDate(date.getDate() + 1);
+  } else if (recurrence === 'weekly') {
+    date.setDate(date.getDate() + 7);
+  } else if (recurrence === 'monthly') {
+    date.setMonth(date.getMonth() + 1);
+  }
+  if (allDay) {
+    return date.toISOString().split('T')[0]; // Return date only for all-day tasks
+  }
+  return date.toISOString().slice(0, 16); // Return date and time for timed tasks
 }
 
 function getEndOfWeek(date: Date): Date {
