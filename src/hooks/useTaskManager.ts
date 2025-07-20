@@ -1,5 +1,4 @@
 
-```typescript
 import { useState, useEffect } from 'react';
 import type { Task, EditingState } from '../types';
 import { getNextDueDate } from './utils';
@@ -146,4 +145,3 @@ export function useTaskManager() {
     cancelEdit,
   };
 }
-```

@@ -1,4 +1,3 @@
-
 export interface Task {
   id: string;
   text: string;
@@ -8,7 +7,7 @@ export interface Task {
   completed: boolean;
   priority: 'low' | 'medium' | 'high';
   createdAt?: string;
-  recurrence: 'none' | 'daily' | 'weekly' | 'monthly'; // New field
+  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
 }
 
 export interface EditingState {
@@ -17,5 +16,6 @@ export interface EditingState {
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
   allDay: boolean;
-  recurrence: 'none' | 'daily' | 'weekly' | 'monthly'; // New field
+  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
 }
+
