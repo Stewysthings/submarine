@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { Task } from './types';
 import type { TaskListProps } from './TaskListProps';
@@ -32,12 +31,12 @@ const TaskList: React.FC<TaskListProps> = ({
   editDueDate,
   editPriority,
   editAllDay,
-  editRecurrence, // New prop
+  editRecurrence,
   setEditText,
   setEditDueDate,
   setEditPriority,
   setEditAllDay,
-  setEditRecurrence, // New prop
+  setEditRecurrence,
   saveEdit,
   cancelEdit,
   activeCategory,
@@ -91,7 +90,7 @@ const TaskList: React.FC<TaskListProps> = ({
                           aria-label="Edit task description"
                         />
                         <input
-                          type={editAllDay ? 'date' : 'datetime-local'} // Adjust for allDay
+                          type={editAllDay ? 'date' : 'datetime-local'}
                           value={
                             editDueDate && !isNaN(new Date(editDueDate).getTime())
                               ? editAllDay
