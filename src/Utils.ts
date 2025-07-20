@@ -1,4 +1,3 @@
-
 import type { Task } from './types';
 
 export function isOverdue(dueDate?: string, completed: boolean = false, allDay: boolean = false): boolean {
@@ -7,7 +6,6 @@ export function isOverdue(dueDate?: string, completed: boolean = false, allDay: 
   const due = new Date(dueDate);
   
   if (allDay) {
-    // For all-day tasks, only overdue if the date has passed
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     due.setHours(0, 0, 0, 0);
@@ -23,14 +21,13 @@ export function isDueSoon(dueDate?: string, allDay: boolean = false): boolean {
   const due = new Date(dueDate);
   
   if (allDay) {
-    // For all-day tasks, check if it's today or tomorrow
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
     due.setHours(0, 0, 0, 0);
-    return due >= today && due < tomorrow;
+    return due >= today && due <= tomorrow;
   }
   
   const diff = due.getTime() - now.getTime();
@@ -47,9 +44,9 @@ export function getNextDueDate(dueDate: string, recurrence: 'daily' | 'weekly' |
     date.setMonth(date.getMonth() + 1);
   }
   if (allDay) {
-    return date.toISOString().split('T')[0]; // Return date only for all-day tasks
+    return date.toISOString().split('T')[0];
   }
-  return date.toISOString().slice(0, 16); // Return date and time for timed tasks
+  return date.toISOString().slice(0, 16);
 }
 
 function getEndOfWeek(date: Date): Date {
@@ -74,7 +71,6 @@ export function categorizeTask(task: Task): string {
   const now = new Date();
   const due = new Date(dueDate);
   
-  // For all-day tasks, compare dates only
   if (allDay) {
     const today = new Date(now);
     today.setHours(0, 0, 0, 0);
@@ -82,7 +78,7 @@ export function categorizeTask(task: Task): string {
     dueDay.setHours(0, 0, 0, 0);
     
     if (dueDay.getTime() === today.getTime()) return 'today';
-    if (dueDay < today) return 'today'; // overdue all-day tasks show as today
+    if (dueDay < today) return 'today';
     
     const endOfThisWeek = getEndOfWeek(now);
     endOfThisWeek.setHours(0, 0, 0, 0);
@@ -95,7 +91,6 @@ export function categorizeTask(task: Task): string {
     return 'someday';
   }
   
-  // For timed tasks, use the existing logic
   const today = new Date(now);
   today.setHours(23, 59, 59, 999);
   if (due <= today) return 'today';
@@ -119,3 +114,4 @@ export const categoryLabels: Record<string, string> = {
   someday: 'Someday',
   completed: 'Completed',
 };
+
