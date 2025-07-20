@@ -1,6 +1,7 @@
-/* Base button styling for all action buttons */
+
+  /* Base button styling for all action buttons */
 .add-button, .edit-button, .delete-button, .save-button, .cancel-button {
-  padding: 8px 15px; /* Narrower padding for consistent size */
+  padding: 8px 15px;
   font-size: 16px;
   border: none;
   border-radius: 6px;
@@ -12,7 +13,7 @@
 .add-button {
   background-color: #007bff;
   color: white;
-  min-width: 100px; /* Match category button width */
+  min-width: 100px;
 }
 
 .add-button:hover {
@@ -20,7 +21,6 @@
   transform: translateY(-1px);
 }
 
-/* Ensure disabled add button maintains blue color but with visual indication it's disabled */
 .add-button:disabled {
   background-color: #007bff;
   color: white;
@@ -93,14 +93,14 @@
 
 /* Filter button styling */
 .filter-buttons button {
-  padding: 8px 15px; /* Smaller padding for fit */
+  padding: 8px 15px;
   background-color: #e0e0e0;
   color: #333;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
-  min-width: 90px; /* Adjusted for more buttons to fit */
+  min-width: 90px;
 }
 
 .filter-buttons button:hover {
@@ -108,7 +108,6 @@
   transform: translateY(-1px);
 }
 
-/* Active filter button styling */
 .filter-buttons button.active {
   background-color: #6c757d;
   color: white;
