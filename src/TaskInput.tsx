@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { FormInput } from './FormInput';
 import './TaskInput.css';
 
 interface TaskInputProps {
@@ -37,15 +36,19 @@ export default function TaskInput({
 
   return (
     <form onSubmit={handleSubmit} className="task-input-form">
-      <FormInput
-        label="Task"
-        id="task"
-        type="text"
-        value={input}
-        onChange={setInput}
-        placeholder="Add a new task..."
-        required
-      />
+      <div className="form-group">
+        <label htmlFor="task">Task</label>
+        <input
+          id="task"
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Add a new task..."
+          className="task-input"
+          required
+          aria-label="Task input"
+        />
+      </div>
 
       <div className="form-group">
         <label htmlFor="dueDate">Due Date</label>
@@ -161,4 +164,3 @@ export default function TaskInput({
     </form>
   );
 }
-export default TaskInput;
