@@ -1,163 +1,155 @@
 
-import React from 'react';
-import './TaskInput.css';
 
-interface TaskInputProps {
-  input: string;
-  dueDate: string;
-  priority: 'low' | 'medium' | 'high';
-  allDay: boolean;
-  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
-  setInput: (value: string) => void;
-  setDueDate: (value: string) => void;
-  setPriority: (value: 'low' | 'medium' | 'high') => void;
-  setAllDay: (value: boolean) => void;
-  setRecurrence: (value: 'none' | 'daily' | 'weekly' | 'monthly') => void;
-  addTask: () => void;
+import { useState, useMemo } from 'react';
+import './AppLayout.css';
+import './ButtonStyles.css';
+import './TaskStyles.css';
+import './FormStyles.css';
+import TaskInput from './TaskInput';
+import TaskList from './TaskList';
+import FilterButtons from './FilterButtons';
+import { isOverdue, isDueSoon, categorizeTask, categoryLabels } from './utils';
+import { useTaskManager } from './hooks/useTaskManager';
+import React from 'react';
+import type { Task, TaskCategory } from './types';
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: string | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  componentDidCatch(error: Error) {
+    this.setState({ error: error.message });
+  }
+
+  render() {
+    if (this.state.error) return <div className="error">Error: {this.state.error}</div>;
+    return this.props.children;
+  }
 }
 
-export default function TaskInput({
-  input,
-  dueDate,
-  priority,
-  allDay,
-  recurrence,
-  setInput,
-  setDueDate,
-  setPriority,
-  setAllDay,
-  setRecurrence,
-  addTask,
-}: TaskInputProps) {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addTask();
-  };
+function App() {
+  const {
+    tasks,
+    editingState,
+    setEditingState,
+    addTask,
+    deleteTask,
+    toggleTask,
+    startEdit,
+    saveEdit,
+    cancelEdit,
+  } = useTaskManager();
+  const [category, setCategory] = useState<TaskCategory>('all');
+  const [input, setInput] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low');
+  const [allDay, setAllDay] = useState(false);
+  const [recurrence, setRecurrence] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
+
+  const categorizedTasks = useMemo(() => {
+    const categories: Record<string, Task[]> = {
+      completed: [],
+      overdue: [],
+      dueSoon: [],
+      today: [],
+      thisweek: [],
+      thismonth: [],
+      someday: [],
+    };
+
+    tasks.forEach((task) => {
+      if (task.completed) {
+        categories.completed.push(task);
+      } else if (isOverdue(task.dueDate, task.completed, task.allDay)) {
+        categories.overdue.push(task);
+      } else if (isDueSoon(task.dueDate, task.allDay)) {
+        categories.dueSoon.push(task);
+      } else {
+        const cat = categorizeTask(task);
+        categories[cat].push(task);
+      }
+    });
+
+    return categories;
+  }, [tasks]);
+
+  const displayedTasks: [string, Task[]][] = useMemo(() => {
+    if (!categorizedTasks) return [];
+    const nonEmptyCategories = Object.entries(categorizedTasks).filter(([_, tasks]) => tasks.length > 0);
+    return category === 'all'
+      ? nonEmptyCategories
+      : [[category, categorizedTasks[category] ?? []]];
+  }, [category, categorizedTasks]);
 
   return (
-    <form onSubmit={handleSubmit} className="task-input-form">
-      <div className="form-group">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Add a new task..."
-          className="task-input"
-          aria-label="Task input"
+    <ErrorBoundary>
+      <div className="app">
+        <h1>To-Do List</h1>
+        <p className="submarine-message">Submarine is surfacing…</p>
+        <div className="input-container">
+          <TaskInput
+            input={input}
+            dueDate={dueDate}
+            priority={priority}
+            allDay={allDay}
+            recurrence={recurrence}
+            setInput={setInput}
+            setDueDate={setDueDate}
+            setPriority={setPriority}
+            setAllDay={setAllDay}
+            setRecurrence={setRecurrence}
+            addTask={() => {
+              addTask(input, dueDate, priority, allDay, recurrence);
+              setInput('');
+              setDueDate('');
+              setPriority('low');
+              setAllDay(false);
+              setRecurrence('none');
+              setCategory('all');
+            }}
+          />
+        </div>
+        <FilterButtons category={category} onCategoryChange={setCategory} />
+        <TaskList
+          displayedTasks={displayedTasks}
+          toggleTask={toggleTask}
+          deleteTask={deleteTask}
+          startEdit={(id: string, text: string, dueDate: string | undefined, priority: 'low' | 'medium' | 'high', allDay: boolean, recurrence: 'none' | 'daily' | 'weekly' | 'monthly') => {
+            startEdit(id, text, dueDate, priority, allDay, recurrence);
+          }}
+          isOverdue={(dueDate?: string, completed?: boolean, allDay?: boolean) => {
+            return isOverdue(dueDate, completed || false, allDay || false);
+          }}
+          isDueSoon={(dueDate?: string, allDay?: boolean) => {
+            return isDueSoon(dueDate, allDay || false);
+          }}
+          categoryLabels={categoryLabels}
+          editingId={editingState.id}
+          editText={editingState.text}
+          editDueDate={editingState.dueDate}
+          editPriority={editingState.priority}
+          editAllDay={editingState.allDay || false}
+          editRecurrence={editingState.recurrence || 'none'}
+          setEditText={(value: React.SetStateAction<string>) =>
+            setEditingState({ ...editingState, text: typeof value === 'function' ? value(editingState.text) : value })}
+          setEditDueDate={(value: React.SetStateAction<string>) =>
+            setEditingState({ ...editingState, dueDate: typeof value === 'function' ? value(editingState.dueDate) : value })}
+          setEditPriority={(value: React.SetStateAction<'low' | 'medium' | 'high'>) =>
+            setEditingState({ ...editingState, priority: typeof value === 'function' ? value(editingState.priority) : value })}
+          setEditAllDay={(value: React.SetStateAction<boolean>) =>
+            setEditingState({ ...editingState, allDay: typeof value === 'function' ? value(editingState.allDay || false) : value })}
+          setEditRecurrence={(value: React.SetStateAction<'none' | 'daily' | 'weekly' | 'monthly'>) =>
+            setEditingState({ ...editingState, recurrence: typeof value === 'function' ? value(editingState.recurrence || 'none') : value })}
+          saveEdit={saveEdit}
+          cancelEdit={cancelEdit}
+          activeCategory={category}
+          onCategoryChange={setCategory}
         />
       </div>
-
-      <div className="form-group">
-        <label htmlFor="dueDate">Due Date</label>
-        <div className="flex items-center gap-2">
-          <input
-            id="dueDate"
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="date-picker"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const today = new Date();
-              setDueDate(today.toISOString().split('T')[0]);
-              setAllDay(true);
-            }}
-            className="form-button"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              setDueDate(tomorrow.toISOString().split('T')[0]);
-              setAllDay(true);
-            }}
-            className="form-button"
-          >
-            Tomorrow
-          </button>
-          {dueDate && (
-            <button
-              type="button"
-              onClick={() => {
-                setDueDate('');
-                setAllDay(false);
-              }}
-              className="form-button clear-button"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
-
-      {dueDate && (
-        <div className="form-group">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={allDay}
-              onChange={(e) => setAllDay(e.target.checked)}
-            />
-            All day task
-          </label>
-        </div>
-      )}
-
-      {dueDate && !allDay && (
-        <div className="form-group">
-          <label htmlFor="dueTime">Due Time</label>
-          <input
-            id="dueTime"
-            type="time"
-            value={dueDate.split('T')[1]?.slice(0, 5) || ''}
-            onChange={(e) => {
-              const time = e.target.value;
-              setDueDate(time ? `${dueDate.split('T')[0]}T${time}` : dueDate);
-            }}
-            className="date-picker"
-          />
-        </div>
-      )}
-
-      <div className="form-group">
-        <label htmlFor="priority">Priority</label>
-        <select
-          id="priority"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-          className="priority-selector"
-          aria-label="Task priority"
-        >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="recurrence">Recurrence</label>
-        <select
-          id="recurrence"
-          value={recurrence}
-          onChange={(e) => setRecurrence(e.target.value as 'none' | 'daily' | 'weekly' | 'monthly')}
-          className="recurrence-selector"
-          aria-label="Task recurrence"
-        >
-          <option value="none">None</option>
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
-      </div>
-
-      <button type="submit" disabled={!input.trim()} className="add-button">
-        Add Task
-      </button>
-    </form>
+    </ErrorBoundary>
   );
 }
+
+export default App;
