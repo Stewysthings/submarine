@@ -34,14 +34,18 @@ export function isDueSoon(dueDate?: string, allDay: boolean = false): boolean {
   return diff >= 0 && diff <= 24 * 60 * 60 * 1000;
 }
 
-export function getNextDueDate(dueDate: string, recurrence: 'daily' | 'weekly' | 'monthly', allDay: boolean = false): string {
+export function getNextDueDate(dueDate: string, recurrence: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly', allDay: boolean = false): string {
   const date = new Date(dueDate);
   if (recurrence === 'daily') {
     date.setDate(date.getDate() + 1);
   } else if (recurrence === 'weekly') {
     date.setDate(date.getDate() + 7);
+  } else if (recurrence === 'biweekly') {
+    date.setDate(date.getDate() + 14);
   } else if (recurrence === 'monthly') {
     date.setMonth(date.getMonth() + 1);
+  } else if (recurrence === 'yearly') {
+    date.setFullYear(date.getFullYear() + 1);
   }
   if (allDay) {
     return date.toISOString().split('T')[0];
