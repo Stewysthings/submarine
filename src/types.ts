@@ -7,7 +7,7 @@ export interface Task {
   completed: boolean;
   priority: 'low' | 'medium' | 'high';
   createdAt?: string;
-  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
+  recurrence: 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
 }
 
 export interface EditingState {
@@ -16,7 +16,7 @@ export interface EditingState {
   dueDate: string;
   priority: 'low' | 'medium' | 'high';
   allDay: boolean;
-  recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
+  recurrence: 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly';
 }
 
 export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
