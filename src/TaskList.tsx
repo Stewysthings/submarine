@@ -5,13 +5,13 @@ import type { TaskListProps } from './TaskListProps';
 function formatDueDate(dueDate?: string, allDay?: boolean): string {
   if (!dueDate) return '';
   const date = new Date(dueDate);
-  
+
   if (allDay) {
     return date.toLocaleDateString([], {
       dateStyle: 'short',
     });
   }
-  
+
   return date.toLocaleString([], {
     dateStyle: 'short',
     timeStyle: 'short',
@@ -64,7 +64,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 return (
                   <li
                     key={task.id}
-                    className={`task-item ${statusClass}`}
+                    className={`task-item ${statusClass} ${task.recurrence !== 'none' ? 'recurring' : ''}`}
                     aria-label={`Task: ${task.text}, ${isOverdue(task.dueDate, task.completed, task.allDay) && !task.completed ? 'Overdue' : isDueSoon(task.dueDate, task.allDay) && !task.completed ? 'Due soon' : task.completed ? 'Completed' : ''}`}
                   >
                     <input
@@ -162,22 +162,24 @@ const TaskList: React.FC<TaskListProps> = ({
                             All day task
                           </label>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => saveEdit(task.id)}
-                          className="save-button"
-                          aria-label="Save task"
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          onClick={cancelEdit}
-                          className="cancel-button"
-                          aria-label="Cancel edit"
-                        >
-                          Cancel
-                        </button>
+                        <div className="edit-actions">
+                          <button
+                            type="button"
+                            onClick={() => saveEdit(task.id)}
+                            className="save-button"
+                            aria-label="Save task"
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelEdit}
+                            className="cancel-button"
+                            aria-label="Cancel edit"
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <>
@@ -191,26 +193,28 @@ const TaskList: React.FC<TaskListProps> = ({
                           {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                         </span>
                         {task.recurrence !== 'none' && (
-                          <span className="recurrence-label text-gray-400">
+                          <span className="recurrence-label">
                             Repeats: {task.recurrence.charAt(0).toUpperCase() + task.recurrence.slice(1)}
                           </span>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay, task.recurrence)}
-                          className="edit-button"
-                          aria-label={`Edit task ${task.text}`}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => deleteTask(task.id)}
-                          className="delete-button"
-                          aria-label={`Delete task ${task.text}`}
-                        >
-                          Delete
-                        </button>
+                        <div className="task-actions">
+                          <button
+                            type="button"
+                            onClick={() => startEdit(task.id, task.text, task.dueDate || '', task.priority, task.allDay, task.recurrence)}
+                            className="edit-button"
+                            aria-label={`Edit task ${task.text}`}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteTask(task.id)}
+                            className="delete-button"
+                            aria-label={`Delete task ${task.text}`}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </>
                     )}
                   </li>
@@ -227,3 +231,4 @@ const TaskList: React.FC<TaskListProps> = ({
 };
 
 export default TaskList;
+
