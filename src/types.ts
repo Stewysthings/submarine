@@ -19,3 +19,6 @@ export interface EditingState {
   recurrence: 'none' | 'daily' | 'weekly' | 'monthly';
 }
 
+export type TaskCategory = 'all' | 'today' | 'thisweek' | 'thismonth' | 'someday' | 'overdue' | 'dueSoon' | 'completed';
+
+
