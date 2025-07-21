@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Task, EditingState } from '../types';
-import { getNextDueDate } from './utils';
+import { getNextDueDate } from '../utils';
 
 export function useTaskManager() {
   const [tasks, setTasks] = useState<Task[]>(() => {
